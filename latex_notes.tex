@@ -1,0 +1,653 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{algorithm2e}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{tikz}
+\usepackage{listings}
+\usepackage{hyperref}  % Added for better navigation
+\usepackage{graphicx}  % Added for image handling
+
+\usetikzlibrary{shapes.geometric, arrows.meta}
+
+\title{Advantages of Quantum Computing in Factor Attacks on RSA Encryption}
+\author{Srinivas Rao Tammireddy \\
+Roll No. 217Y1A05C0 \\
+\textsc{Computer Science and Engineering} \\
+\textit{Guide: Dr. S Pratap Singh (Professor)}
+}
+\date{\today}  % Changed to include current date
+
+% \sloppy                 % Reduce word spacing to avoid Overfull hboxes
+\hfuzz=99pt             % Increase tolerance for overfull hboxes
+\hbadness=10000         % Suppress warnings for underfull hboxes
+\exhyphenpenalty=10000  % Suppress hyphenation across lines
+\hyphenpenalty=10000    % Suppress hyphenation across lines
+
+\begin{document}
+\maketitle
+\newpage
+\tableofcontents
+\newpage
+\listoffigures
+\listoftables
+\newpage
+
+\section{Abstract}
+The aim of this technical seminar is to explore the advantages of quantum computing in breaking RSA encryption. This report discusses the fundamentals of RSA encryption, the limitations of classical computing in breaking RSA, and how quantum computing, specifically Shor's algorithm, can efficiently factor large integers, posing a significant threat to RSA encryption. The report also explores post-quantum cryptographic methods and the future of cybersecurity in the quantum era. This seminar highlights the paradigm shift that quantum computing brings to cryptography and emphasizes the need for quantum-resistant security solutions.
+
+\section{Introduction}
+\subsection{Background and Motivation}
+RSA encryption is a widely used public-key cryptosystem that relies on the difficulty of factoring large integers. The security of RSA is based on the assumption that factoring the product of two large prime numbers is computationally infeasible. However, with the advent of quantum computing, this assumption is being challenged.
+
+\subsection{Problem Statement}
+Classical computers face fundamental limitations when attempting to factor large numbers used in RSA encryption. This report explores how quantum computing overcomes these limitations through Shor's algorithm and examines the implications for current cryptographic systems.
+
+\subsection{Objectives of the Study}
+\begin{itemize}
+    \item To analyze the mathematical foundations of RSA encryption
+    \item To investigate the limitations of classical computing in breaking RSA
+    \item To examine how quantum computing, particularly Shor's algorithm, accelerates factorization
+    \item To explore quantum-resistant cryptographic solutions
+    \item To assess the timeline and practical implications of quantum threats to RSA
+\end{itemize}
+
+\subsection{Scope and Limitations}
+This seminar focuses on the theoretical advantages of quantum computing for factorization and its implications for RSA security. While implementation aspects are discussed, detailed quantum circuit implementations and physical realization challenges are beyond the scope of this report.
+
+\subsection{Historical Development of RSA}
+RSA was invented in 1977 by Ron Rivest, Adi Shamir, and Leonard Adleman at MIT. It was one of the first practical public-key cryptosystems and is widely used for secure data transmission.
+
+\subsection{Classical Approaches to Breaking RSA}
+Researchers have developed various classical algorithms to factor large integers, including the quadratic sieve and the general number field sieve. Despite continuous improvements, these algorithms still require exponential time for large integers, making RSA secure against classical attacks for sufficiently large keys.
+
+\subsection{Evolution of Quantum Computing}
+Since Peter Shor's breakthrough algorithm in 1994, quantum computing research has grown significantly. Theoretical work has been complemented by experimental progress in building quantum computers with increasing numbers of qubits and reducing error rates.
+
+\subsection{Current State of Quantum Computing Technology}
+As of [current year], quantum computers have reached [X] qubits, though with significant error rates. Companies like IBM, Google, and Microsoft are investing heavily in quantum hardware development, with roadmaps projecting fault-tolerant quantum computers within the next decade.
+
+\section{Background: Classical Cryptography and RSA}
+
+\subsection{Key Generation Process}
+\begin{enumerate}
+    \item Choose two distinct large prime numbers \( p \) and \( q \).
+    \item Compute \( n = pq \). The number \( n \) is used as the modulus for both the public and private keys.
+    \item Compute the totient function \( \phi(n) = (p-1)(q-1) \).
+    \item Choose an integer \( e \) such that \( 1 < e < \phi(n) \) and \( \gcd(e, \phi(n)) = 1 \). The integer \( e \) is the public exponent.
+    \item Compute the private exponent \( d \) such that \( ed \equiv 1 \pmod{\phi(n)} \).
+\end{enumerate}
+
+The public key is \( (e, n) \) and the private key is \( (d, n) \).
+
+\subsection{Encryption and Decryption Processes}
+
+\subsubsection{RSA Algorithm}
+The RSA algorithm can be summarized in the following steps:
+
+\begin{algorithm}[H]
+\caption{RSA Algorithm}
+\KwIn{Message \( M \), Public key \( (e, n) \), Private key \( (d, n) \)}
+\KwOut{Ciphertext \( C \), Decrypted message \( M' \)}
+
+\textbf{Key Generation:}
+\begin{enumerate}
+    \item Choose two distinct large prime numbers \( p \) and \( q \).
+    \item Compute \( n = pq \).
+    \item Compute the totient function \( \phi(n) = (p-1)(q-1) \).
+    \item Choose an integer \( e \) such that \( 1 < e < \phi(n) \) and \( \gcd(e, \phi(n)) = 1 \).
+    \item Compute the private exponent \( d \) such that \( ed \equiv 1 \pmod{\phi(n)} \).
+\end{enumerate}
+
+\textbf{Encryption:}
+\begin{enumerate}
+    \item Given a message \( M \), compute the ciphertext \( C \) as:
+    \[ C = M^e \mod n \]
+\end{enumerate}
+
+\textbf{Decryption:}
+\begin{enumerate}
+    \item Given a ciphertext \( C \), compute the decrypted message \( M' \) as:
+    \[ M' = C^d \mod n \]
+\end{enumerate}
+
+\end{algorithm}
+
+\subsubsection{Numerical Example}
+Let's consider an example with \( p = 17 \), \( q = 19 \), and \( M = 12 \).
+
+\begin{enumerate}
+    \item Compute \( n = pq = 17 \times 19 = 323 \).
+    \item Compute the totient function \( \phi(n) = (p-1)(q-1) = 16 \times 18 = 288 \).
+    \item Choose \( e = 5 \) (since \( 1 < 5 < 288 \) and \( \gcd(5, 288) = 1 \)).
+    \item Compute the private exponent \( d \) such that \( ed \equiv 1 \pmod{288} \). Here, \( d = 173 \) (since \( 5 \times 173 \equiv 1 \pmod{288} \)).
+\end{enumerate}
+
+The public key is \( (5, 323) \) and the private key is \( (173, 323) \).
+
+\paragraph{Encryption}
+To encrypt a message \( M = 12 \):
+\[ C = M^e \mod n = 12^5 \mod 323 = 248832 \mod 323 = 269 \]
+where \( C \) is the ciphertext.
+
+\paragraph{Decryption}
+To decrypt the ciphertext \( C = 269 \):
+\[ M = C^d \mod n = 269^{173} \mod 323 = 12 \]
+
+\subsection{Implementation in Python}
+The following Python code demonstrates the RSA key generation, encryption, and decryption process:
+
+\lstset{
+    language=Python,
+    basicstyle=\ttfamily\small,
+    keywordstyle=\color{blue},
+    commentstyle=\color{green},
+    stringstyle=\color{red},
+    showstringspaces=false,
+    identifierstyle=\color{black},
+    backgroundcolor=\color{gray!10},
+    frame=single,
+    breaklines=true,
+    breakatwhitespace=true,
+    postbreak=\mbox{\textcolor{red}{$\hookrightarrow$}\space},
+    columns=flexible,
+    linewidth=0.95\textwidth
+}
+\sloppy
+\begin{lstlisting}
+# Step 1: Key Generation
+import random
+from sympy import gcd, isprime, mod_inverse
+
+def generate_rsa_keypair(p, q):
+    # Check if both numbers are prime
+    if not (isprime(p) and isprime(q)):
+        raise ValueError('Both numbers must be prime.')
+    elif p == q:
+        raise ValueError('p and q cannot be the same')
+    
+    # Compute n (modulus) and Euler's Totient (phi_n)
+    n = p * q
+    phi_n = (p - 1) * (q - 1)
+
+    # Choose e such that 1 < e < phi_n and gcd(e, phi_n) = 1
+    e = 5  # Example choice of e
+
+    g = gcd(e, phi_n)
+    while g != 1:
+        e = random.randrange(2, phi_n - 1)
+        g = gcd(e, phi_n)
+
+    # Compute d such that (d * e) % phi_n = 1
+    d = mod_inverse(e, phi_n)
+    
+    # Return public key (e, n) and private key (d, n)
+    return ((e, n), (d, n))
+    
+# Example usage
+p, q = 17, 19
+
+# Generally Large primes
+
+# Generate public key (e, n) and private key (d, n)
+public_key, private_key = generate_rsa_keypair(p, q)
+
+# Step 2: Encryption
+def encrypt(message, public_key):
+    e, n = public_key
+    # Encrypt the message using the public key
+    return pow(message, e, n)
+
+# Step 3: Decryption
+def decrypt(ciphertext, private_key):
+    d, n = private_key
+    # Decrypt the ciphertext using the private key
+    return pow(ciphertext, d, n)
+
+# Example usage
+message = 12  # Example message
+ciphertext = encrypt(message, public_key)
+decrypted_message = decrypt(ciphertext, private_key)
+\end{lstlisting}
+
+\section{Drawbacks of Classical Systems for Breaking RSA}
+\subsection{Limitations of Classical Factoring Algorithms}
+Classical computing relies on algorithms that are inefficient for factoring large integers. Some of these algorithms include:
+\begin{itemize}
+    \item Trial division: Simple but extremely inefficient for large numbers
+    \item Pollard's rho algorithm: Faster than trial division but still impractical for RSA-sized numbers
+    \item Quadratic sieve: More efficient but still exponential complexity
+    \item General number field sieve: The fastest known classical algorithm, but still requires exponential time
+\end{itemize}
+
+\subsection{Computational Barriers}
+The best-known classical algorithms, such as the General Number Field Sieve, have sub-exponential but still prohibitive time complexity:
+\[ O(e^{(c \log N)^{1/3} (\log \log N)^{2/3}}) \]
+
+This makes it computationally infeasible to factor large integers (such as 2048-bit RSA keys) within a reasonable timeframe using classical computers.
+
+\subsection{Security by Computational Difficulty}
+The security of RSA in the classical computing paradigm is not based on mathematical proof of security, but rather on the practical difficulty of factoring. This creates a potential vulnerability if more efficient factoring algorithms or computing methods are discovered.
+
+\section{Proposed System: Quantum Computing and Shor's Algorithm}
+\subsection{Quantum Computing Foundations}
+
+\subsubsection{Quantum Bits and Superposition}
+Unlike classical bits that can be either 0 or 1, a qubit can exist in a superposition of states, represented mathematically as:
+
+\[ |\psi\rangle = \alpha|0\rangle + \beta|1\rangle \]
+
+where $\alpha$ and $\beta$ are complex numbers satisfying $|\alpha|^2 + |\beta|^2 = 1$, and $|0\rangle$ and $|1\rangle$ represent the computational basis states.
+
+\subsubsection{Quantum Gates and Circuits}
+Quantum gates are represented by unitary matrices that transform qubits while preserving the norm of the quantum state.
+
+\paragraph{Common Quantum Gates}
+\begin{itemize}
+    \item \textbf{Hadamard Gate (H):} Creates superposition
+    \[ H = \frac{1}{\sqrt{2}}\begin{bmatrix} 1 & 1 \\ 1 & -1 \end{bmatrix} \]
+    
+    \item \textbf{Pauli Gates:} 
+    \[ X = \begin{bmatrix} 0 & 1 \\ 1 & 0 \end{bmatrix}, \quad 
+       Y = \begin{bmatrix} 0 & -i \\ i & 0 \end{bmatrix}, \quad 
+       Z = \begin{bmatrix} 1 & 0 \\ 0 & -1 \end{bmatrix} \]
+    
+    \item \textbf{CNOT Gate:} Two-qubit gate that flips the target qubit if the control qubit is $|1\rangle$
+    \[ CNOT = \begin{bmatrix} 1 & 0 & 0 & 0 \\ 0 & 1 & 0 & 0 \\ 0 & 0 & 0 & 1 \\ 0 & 0 & 1 & 0 \end{bmatrix} \]
+\end{itemize}
+
+\subsubsection{Quantum Fourier Transform}
+The Quantum Fourier Transform (QFT) is a key component of Shor's algorithm and many other quantum algorithms. It is the quantum counterpart of the discrete Fourier transform.
+
+\paragraph{Mathematical Definition}
+For an $n$-qubit state $|j\rangle$, the QFT is defined as:
+
+\[ QFT|j\rangle = \frac{1}{\sqrt{2^n}} \sum_{k=0}^{2^n-1} e^{2\pi i jk/2^n} |k\rangle \]
+
+\paragraph{Circuit Implementation}
+The QFT can be implemented using Hadamard and controlled rotation gates. For an $n$-qubit system, the circuit depth is $O(n^2)$.
+
+\begin{figure}[ht]
+\centering
+\begin{tikzpicture}[scale=0.8]
+    % Define qubits
+    \draw (0,0) -- (8,0) node[right] {$|q_0\rangle$};
+    \draw (0,1) -- (8,1) node[right] {$|q_1\rangle$};
+    \draw (0,2) -- (8,2) node[right] {$|q_2\rangle$};
+    
+    % Hadamard gates
+    \draw[fill=blue!20] (1,0) rectangle (1.5,0.5);
+    \node at (1.25,0.25) {H};
+    
+    \draw[fill=blue!20] (3,1) rectangle (3.5,1.5);
+    \node at (3.25,1.25) {H};
+    
+    \draw[fill=blue!20] (5,2) rectangle (5.5,2.5);
+    \node at (5.25,2.25) {H};
+    
+    % Controlled rotation gates
+    \draw[fill=green!20] (2,0) circle (0.3);
+    \node at (2,0) {$R_2$};
+    \draw (2,1) -- (2,0.3);
+    \draw[fill=black] (2,1) circle (0.1);
+    
+    \draw[fill=green!20] (2.5,0) circle (0.3);
+    \node at (2.5,0) {$R_3$};
+    \draw (2.5,2) -- (2.5,0.3);
+    \draw[fill=black] (2.5,2) circle (0.1);
+    
+    \draw[fill=green!20] (4,1) circle (0.3);
+    \node at (4,1) {$R_2$};
+    \draw (4,2) -- (4,1.3);
+    \draw[fill=black] (4,2) circle (0.1);
+    
+    % SWAP gates
+    \draw (6.5,0) -- (6.5,2);
+    \draw (7,0) -- (7,2);
+    \draw[fill=red!20] (6.5,0) circle (0.1);
+    \draw[fill=red!20] (7,2) circle (0.1);
+    \draw[fill=red!20] (7,0) circle (0.1);
+    \draw[fill=red!20] (6.5,2) circle (0.1);
+\end{tikzpicture}
+\caption{Quantum circuit for 3-qubit Quantum Fourier Transform}
+\end{figure}
+
+\subsection{Shor's Algorithm: Quantum Threat to RSA}
+
+\subsubsection{Overview of Shor's Algorithm}
+Quantum computing introduces a significant threat to RSA encryption through Shor's algorithm. Shor's algorithm can factor large integers in polynomial time, which is exponentially faster than the best-known classical algorithms.
+
+\subsubsection{Period Finding in Shor's Algorithm}
+The core of Shor's algorithm is the period-finding problem. Given a function $f(x) = a^x \mod N$ for some integer $a$ coprime to $N$, the goal is to find the period $r$ such that $f(x + r) = f(x)$ for all $x$.
+
+\subsubsection{Quantum Circuit for Period Finding}
+The quantum circuit for period finding uses two registers:
+\begin{enumerate}
+    \item First register: $n$ qubits initialized to $|0\rangle$
+    \item Second register: $m$ qubits initialized to $|0\rangle$, where $m \approx \log_2 N$
+\end{enumerate}
+
+The steps are:
+\begin{enumerate}
+    \item Apply Hadamard gates to all qubits in the first register to create a superposition
+    \item Apply the function $f(x) = a^x \mod N$ as a unitary operation
+    \item Apply the Quantum Fourier Transform to the first register
+    \item Measure the first register
+\end{enumerate}
+
+\begin{figure}[ht]
+\centering
+\begin{tikzpicture}[scale=0.7]
+    % Input qubits
+    \node at (-0.5, 3) {$|0\rangle^{\otimes n}$};
+    \node at (-0.5, 1) {$|0\rangle^{\otimes m}$};
+    
+    % First register
+    \draw (0,3) -- (9,3);
+    
+    % Second register
+    \draw (0,1) -- (9,1);
+    
+    % Hadamard gates
+    \draw[fill=blue!20] (1,2.5) rectangle (2,3.5);
+    \node at (1.5,3) {$H^{\otimes n}$};
+    
+    % Modular exponentiation
+    \draw[fill=orange!20] (3,0.5) rectangle (4,3.5);
+    \node at (3.5,2) {$U_f$};
+    
+    % QFT
+    \draw[fill=green!20] (5,2.5) rectangle (6,3.5);
+    \node at (5.5,3) {$QFT^{-1}$};
+    
+    % Measurement
+    \draw[fill=red!20] (7,2.5) rectangle (8,3.5);
+    \node at (7.5,3) {Measure};
+    
+    % Output
+    \node at (9.5, 3) {$|\tilde{s}\rangle$};
+    \node at (9.5, 1) {$|a^x \mod N\rangle$};
+\end{tikzpicture}
+\caption{Quantum circuit for period finding in Shor's algorithm}
+\end{figure}
+
+\subsubsection{Detailed Algorithm Steps}
+
+\begin{algorithm}[H]
+\caption{Shor's Algorithm}
+\KwIn{Integer \( N \) to be factored}
+\KwOut{Prime factors of \( N \)}
+Choose a random integer \( a \) such that \( 1 < a < N \)\;
+Compute \( \gcd(a, N) \)\;
+\If{\( \gcd(a, N) \neq 1 \)}{
+    \Return \( \gcd(a, N) \);
+}
+Use quantum period finding to find the period \( r \) of the function \( f(x) = a^x \mod N \)\;
+\If{\( r \) is odd or \( a^{r/2} \equiv -1 \pmod{N} \)}{
+    \Return "Failure, try again";
+}
+Compute \( p = \gcd(a^{r/2} - 1, N) \) and \( q = \gcd(a^{r/2} + 1, N) \)\;
+\Return \( p \) and \( q \);
+\end{algorithm}
+
+\subsubsection{Complexity Analysis and Comparison}
+Shor's algorithm achieves exponential speedup over classical factoring algorithms:
+
+\begin{table}[ht]
+\centering
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{|l|l|l|}
+
+\hline
+\textbf{Algorithm} & \textbf{Time Complexity} & \textbf{Space Complexity} \\
+\hline
+General Number Field Sieve (Classical) & $O(e^{(c \log N)^{1/3} (\log \log N)^{2/3}})$ & $O(e^{(c \log N)^{1/3} (\log \log N)^{2/3}})$ \\
+\hline
+Shor's Algorithm (Quantum) & $O((\log N)^2 (\log \log N) (\log \log \log N))$ & $O(\log N)$ qubits \\
+\hline
+\end{tabular}%
+}
+\caption{Complexity comparison between classical and quantum factoring algorithms}
+\end{table}
+
+\section{Advantages of Quantum Computing for Factorization}
+\subsection{Exponential Speedup}
+Quantum computing offers exponential speedup over classical factoring methods:
+\begin{itemize}
+    \item Classical methods require exponential time: $O(e^{(c \log N)^{1/3} (\log \log N)^{2/3}})$
+    \item Shor's algorithm runs in polynomial time: $O((\log N)^2 (\log \log N) (\log \log \log N))$
+\end{itemize}
+
+This represents a fundamental breakthrough in computational efficiency for the factorization problem.
+
+\subsection{Algorithmic Advantages}
+The key advantages of quantum computing for factorization include:
+\begin{itemize}
+    \item Quantum parallelism: Ability to simultaneously evaluate a function for multiple inputs
+    \item Quantum Fourier Transform: Efficiently extracts the periodicity information crucial for factoring
+    \item Quantum entanglement: Allows correlation between qubits that enhances computational power
+    \item Quantum superposition: Enables exponentially many computational paths simultaneously
+\end{itemize}
+
+\subsection{Practical Impact on RSA Security}
+The impact of quantum factorization on RSA security is profound:
+\begin{itemize}
+    \item A sufficiently powerful quantum computer could break RSA encryption regardless of key size
+    \item Most public key infrastructure would need to be replaced
+    \item Data encrypted today could be decrypted in the future when quantum computers become available (harvest now, decrypt later attack)
+\end{itemize}
+
+\section{Applications of Quantum-Resistant Cryptography}
+\subsection{Post-Quantum Cryptographic Methods}
+
+\subsubsection{Alternative Cryptographic Methods}
+Post-quantum cryptography aims to develop cryptographic algorithms that are secure against quantum attacks. Some promising alternatives to RSA include:
+\begin{itemize}
+    \item \textbf{Lattice-based Cryptography:} Relies on the hardness of lattice problems, which are believed to be resistant to quantum attacks.
+    \item \textbf{Hash-based Cryptography:} Uses hash functions to create secure digital signatures.
+    \item \textbf{Code-based Cryptography:} Based on error-correcting codes, providing security against quantum attacks.
+\end{itemize}
+
+\subsubsection{NIST Standardization Process}
+The National Institute of Standards and Technology (NIST) has been conducting a standardization process for post-quantum cryptography since 2017:
+\begin{itemize}
+    \item \textbf{Round 3 Finalists (2020):} Selected algorithms including CRYSTALS-Kyber, CRYSTALS-Dilithium, FALCON, and SPHINCS+
+    \item \textbf{First Standards (2022):} CRYSTALS-Kyber (key encapsulation) and CRYSTALS-Dilithium, FALCON, and SPHINCS+ (digital signatures)
+    \item \textbf{Ongoing work:} Additional candidates under consideration for future standardization
+\end{itemize}
+
+\subsubsection{Hybrid Cryptographic Approaches}
+During the transition period, hybrid approaches combining classical and post-quantum cryptography offer a pragmatic solution:
+
+\begin{itemize}
+    \item \textbf{TLS hybridization:} Combining classical (e.g., ECDHE) and post-quantum (e.g., Kyber) key exchange
+    \item \textbf{Hybrid signatures:} Using both RSA/ECDSA and post-quantum signature schemes
+\end{itemize}
+
+\subsection{Critical Infrastructure Protection}
+Quantum-resistant cryptography has crucial applications in:
+\begin{itemize}
+    \item Banking and financial services
+    \item Government communications and national security
+    \item Healthcare data protection
+    \item Smart grid and critical infrastructure
+    \item Blockchain and cryptocurrency technology
+\end{itemize}
+
+\subsection{Implementation Challenges}
+Transitioning to post-quantum cryptography presents several challenges:
+\begin{itemize}
+    \item Legacy system compatibility
+    \item Performance overhead of post-quantum algorithms
+    \item Standardization and certification processes
+    \item Hardware and software implementation costs
+    \item User education and adoption barriers
+\end{itemize}
+
+\section{Future Enhancements and Conclusion}
+\subsection{Future of Quantum Computing}
+The development of quantum computing technology is progressing rapidly:
+\begin{itemize}
+    \item Increasing qubit counts and coherence times
+    \item Improved error correction techniques
+    \item Development of quantum networking and quantum internet
+    \item Hybrid classical-quantum computing approaches
+\end{itemize}
+
+\subsection{Cryptographic Evolution}
+The future of cryptography will likely involve:
+\begin{itemize}
+    \item Continual development of quantum-resistant algorithms
+    \item Quantum cryptography (e.g., quantum key distribution)
+    \item Homomorphic encryption for privacy-preserving computation
+    \item Zero-knowledge proof systems for authentication
+    \item New mathematical foundations for cryptographic security
+\end{itemize}
+
+\subsection{Conclusion}
+The security of RSA encryption relies on the difficulty of factoring large integers. Quantum computing, with its ability to efficiently factor large integers using Shor's algorithm, poses a significant threat to the RSA cryptosystem. As quantum computing technology advances, it becomes increasingly important to develop new cryptographic methods that can withstand quantum attacks and prepare for the transition to a post-quantum cryptographic landscape. The race between quantum computing capabilities and quantum-resistant cryptography will define the next era of information security.
+
+\newpage
+\appendix
+\section{Glossary of Terms}
+\begin{itemize}
+    \item \textbf{Qubit}: The fundamental unit of quantum information, analogous to a classical bit.
+    \item \textbf{Superposition}: A quantum mechanical property where a qubit can exist in multiple states simultaneously.
+    \item \textbf{Quantum Entanglement}: A quantum mechanical phenomenon where qubits become correlated in such a way that the quantum state of each qubit cannot be described independently.
+    \item \textbf{RSA}: A public-key cryptosystem named after its inventors Rivest, Shamir, and Adleman.
+    \item \textbf{Shor's Algorithm}: A quantum algorithm for integer factorization developed by Peter Shor in 1994.
+    \item \textbf{Post-Quantum Cryptography}: Cryptographic algorithms believed to be secure against attacks by quantum computers.
+\end{itemize}
+
+\section{Sample Code Implementation}
+\subsection{RSA Implementation in Python}
+\lstset{
+    language=Python,
+    basicstyle=\ttfamily\small,
+    keywordstyle=\color{blue},
+    commentstyle=\color{green},
+    stringstyle=\color{red},
+    showstringspaces=false,
+    identifierstyle=\color{black},
+    backgroundcolor=\color{gray!10},
+    frame=single,
+    breaklines=true,
+    postbreak=\mbox{\textcolor{red}{$\hookrightarrow$}\space},
+}
+\begin{lstlisting}
+# Complete RSA Implementation
+import random
+from sympy import gcd, isprime, mod_inverse
+
+def generate_rsa_keypair(p, q):
+    # Check if both numbers are prime
+    if not (isprime(p) and isprime(q)):
+        raise ValueError('Both numbers must be prime.')
+    elif p == q:
+        raise ValueError('p and q cannot be the same')
+    
+    # Compute n (modulus) and Euler's Totient (phi_n)
+    n = p * q
+    phi_n = (p - 1) * (q - 1)
+
+    # Choose e such that 1 < e < phi_n and gcd(e, phi_n) = 1
+    e = 5  # Example choice of e
+
+    g = gcd(e, phi_n)
+    while g != 1:
+        e = random.randrange(2, phi_n - 1)
+        g = gcd(e, phi_n)
+
+    # Compute d such that (d * e) % phi_n = 1
+    d = mod_inverse(e, phi_n)
+    
+    # Return public key (e, n) and private key (d, n)
+    return ((e, n), (d, n))
+    
+# Example usage
+p, q = 17, 19
+
+# Generate public key (e, n) and private key (d, n)
+public_key, private_key = generate_rsa_keypair(p, q)
+
+# Encryption function
+def encrypt(message, public_key):
+    e, n = public_key
+    # Encrypt the message using the public key
+    return pow(message, e, n)
+
+# Decryption function
+def decrypt(ciphertext, private_key):
+    d, n = private_key
+    # Decrypt the ciphertext using the private key
+    return pow(ciphertext, d, n)
+
+# Demonstration
+message = 12  # Example message
+ciphertext = encrypt(message, public_key)
+decrypted_message = decrypt(ciphertext, private_key)
+print(f"Original message: {message}")
+print(f"Encrypted message: {ciphertext}")
+print(f"Decrypted message: {decrypted_message}")
+\end{lstlisting}
+
+\subsection{Quantum Period Finding Simulation (Simplified)}
+\begin{lstlisting}
+# Simplified simulation of period finding using Qiskit
+from qiskit import QuantumCircuit, Aer, execute
+from qiskit.visualization import plot_histogram
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Parameters
+N = 15  # Number to factor
+a = 7   # Random number coprime to N
+
+# Create quantum circuit for period finding
+def create_period_finding_circuit(N, a, n_count):
+    # n_count: number of counting qubits
+    
+    # Create quantum circuit
+    qc = QuantumCircuit(n_count, n_count)
+    
+    # Apply Hadamard to all counting qubits
+    for i in range(n_count):
+        qc.h(i)
+    
+    # Apply controlled-U^(2^j) operations
+    # In a real implementation, this would implement 
+    # modular exponentiation
+    # For simplicity, we're just showing the structure
+    for j in range(n_count):
+        qc.x(j)  # Placeholder for controlled modular exponentiation
+        qc.x(j)  # Reverse the placeholder
+    
+    # Apply inverse QFT
+    for i in range(n_count//2):
+        qc.swap(i, n_count-i-1)
+    
+    for i in range(n_count):
+        qc.h(i)
+        for j in range(i+1, n_count):
+            qc.cp(-np.pi/float(2**(j-i)), j, i)
+    
+    # Measure all qubits
+    qc.measure(range(n_count), range(n_count))
+    
+    return qc
+
+# Create and simulate the circuit
+n_count = 8  # Number of counting qubits
+circuit = create_period_finding_circuit(N, a, n_count)
+simulator = Aer.get_backend('qasm_simulator')
+job = execute(circuit, simulator, shots=1024)
+result = job.result()
+counts = result.get_counts()
+
+# In a real implementation, we would analyze the results to find 
+# the period and continue with Shor's algorithm to find 
+# the factors
+\end{lstlisting}
+
+\end{document}
