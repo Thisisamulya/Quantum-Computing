@@ -7,8 +7,22 @@
 \usepackage{tikz}
 \usepackage{float}
 
-\usetikzlibrary{shapes.geometric, arrows, arrows.meta}
+\usetikzlibrary{external, shapes.geometric, arrows, arrows.meta}
 \graphicspath{{images/}}
+
+% \tikzexternalize[mode=list and make]
+
+\tikzset{
+    png export/.style={
+        % First we call ImageMagick; change settings to requirements
+        external/system call/.add={}{; magick convert -density 300 -transparent white "\image.pdf" "\image.png"},
+        % Now we force the PNG figure to be used instead of the PDF
+        /pgf/images/external info,
+        /pgf/images/include external/.code={
+            \includegraphics[width=\pgfexternalwidth,height=\pgfexternalheight]{##1.png}
+        },
+    }
+}
 
 % Define python style for highlighting code
 \usepackage{listings}
@@ -22,7 +36,7 @@
 \definecolor{codegray}{rgb}{0.5,0.5,0.5}
 \definecolor{codepurple}{rgb}{0.58,0,0.82}
 \definecolor{backcolour}{rgb}{0.95,0.95,0.92}
- 
+
 \lstdefinestyle{graystyle}{
     backgroundcolor=\color{backcolour},   
     commentstyle=\color{codegreen},
@@ -58,25 +72,25 @@
     morestring=[b]``
 }
 \lstdefinestyle{mystyle}{
-    backgroundcolor=\color{white},   
-    commentstyle=\color{green},
+    backgroundcolor=\color{white},
+    commentstyle=\color{deepgreen},
     keywordstyle=\color{deepblue},
     numberstyle=\tiny\color{gray},
     stringstyle=\color{deepred},
-    emphstyle=\ttb\color{deepred}, 
+    emphstyle=\ttb\color{deepred},
     basicstyle=\ttfamily,
-    breakatwhitespace=false,         
-    breaklines=true,                 
-    captionpos=b,                    
-    keepspaces=true,                 
-    numbers=left,                    
-    numbersep=5pt,                  
-    showspaces=false,                
+    breakatwhitespace=false,
+    breaklines=true,
+    captionpos=b,
+    keepspaces=true,
+    numbers=left,
+    numbersep=5pt,
+    showspaces=false,
     showstringspaces=false,
-    showtabs=false,                  
+    showtabs=false,
     tabsize=2
 }
-\lstset{style=graystyle}
+\lstset{style=mystyle}
 
 
 \geometry{a4paper, margin=1in}
@@ -157,6 +171,7 @@ As shown in Figure~\ref{fig:key_generation}, this process ensures the generation
 
 \begin{figure}[ht!]
     \centering
+    \tikzset{png export}
     \begin{tikzpicture}
         % Draw the nodes
         \node[draw, rectangle, minimum width=3cm, minimum height=1cm] (p) at (0, 0) {\(p\): Large Prime};
