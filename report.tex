@@ -25,32 +25,7 @@
 \definecolor{codegreen}{rgb}{0,0.6,0}
 \definecolor{codegray}{rgb}{0.5,0.5,0.5}
 \definecolor{codepurple}{rgb}{0.58,0,0.82}
-
-\definecolor{codegreen}{rgb}{0,0.6,0}
-\definecolor{codegray}{rgb}{0.5,0.5,0.5}
-\definecolor{codepurple}{rgb}{0.58,0,0.82}
 \definecolor{backcolour}{rgb}{0.95,0.95,0.92}
-
-\lstdefinestyle{graystyle}{
-    backgroundcolor=\color{backcolour},   
-    commentstyle=\color{codegreen},
-    keywordstyle=\color{magenta},
-    numberstyle=\tiny\color{codegray},
-    stringstyle=\color{codepurple},
-    basicstyle=\ttfamily,
-    comment=[l]{\#},
-    commentstyle=\color{deepgreen}\footnotesize\rmfamily,
-    breakatwhitespace=false,         
-    breaklines=true,                 
-    captionpos=b,                    
-    keepspaces=true,                 
-    numbers=left,                    
-    numbersep=5pt,                  
-    showspaces=false,                
-    showstringspaces=false,
-    showtabs=false,                  
-    tabsize=2
-}
 
 % Define python style for highlighting code
 \lstdefinestyle{pythonstyle}{
@@ -63,6 +38,7 @@
     comment=[l]{\#},
     commentstyle=\color{deepgreen}\ttfamily,
     stringstyle=\color{deepred}\ttfamily,
+    numberstyle=\tiny\color{gray},
     morestring=[b]',
     morestring=[b]``,
     basicstyle=\ttfamily,
@@ -78,14 +54,15 @@
     tabsize=2
 }
 
-\lstdefinestyle{mystyle}{
-    backgroundcolor=\color{white},
-    commentstyle=\color{deepgreen},
-    keywordstyle=\color{deepblue},
-    numberstyle=\tiny\color{gray},
-    stringstyle=\color{deepred},
-    emphstyle=\ttb\color{deepred},
+\lstdefinestyle{graystyle}{
+    backgroundcolor=\color{backcolour},
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
     basicstyle=\ttfamily,
+    comment=[l]{\#},
+    commentstyle=\color{deepgreen}\footnotesize\rmfamily,
     breakatwhitespace=false,
     breaklines=true,
     captionpos=b,
@@ -95,7 +72,8 @@
     showspaces=false,
     showstringspaces=false,
     showtabs=false,
-    tabsize=2
+    tabsize=2,
+    language=Python,
 }
 
 \lstset{style=graystyle}
@@ -108,6 +86,8 @@
 \date{\today}
 
 \sloppy % Allow LaTeX to adjust spacing to avoid underfull hbox warnings
+\hfuzz=99pt             % Increase tolerance for overfull hboxes
+\hbadness=10000         % Suppress warnings for underfull hboxes
 
 
 \begin{document}
@@ -133,7 +113,7 @@ Signature of Student
 Quantum computing has emerged as a revolutionary paradigm in computation, offering significant advantages over classical computing for certain types of problems. One of the most notable implications of quantum computing is its potential to break widely used cryptographic systems, such as RSA encryption. This report explores the principles of RSA encryption, the capabilities of quantum computing, and how quantum algorithms, particularly Shor's algorithm, pose a threat to the security of RSA\@. The report also discusses the implications of this threat and the need for quantum-resistant cryptographic systems.
 \chapter{Introduction to RSA Encryption and Quantum Computing}
 \label{chap:introduction}
-
+\sloppy
 RSA encryption is a cornerstone of modern cryptography, widely used to secure digital communications. Its security is based on the computational difficulty of factoring large integers, a problem that classical computers find infeasible to solve within a reasonable timeframe. However, the advent of quantum computing introduces a paradigm shift in computational capabilities. Quantum computers, leveraging principles such as superposition and entanglement, can solve certain problems exponentially faster than classical computers. This chapter provides an overview of RSA encryption, its working principles, its critical role in ensuring secure communication, and the potential impact of quantum computing on its security.
 
 \section{Overview of RSA Encryption}
@@ -166,7 +146,7 @@ This report will delve into the mathematical foundation of RSA encryption, the v
 \chapter{The Vulnerability of RSA Encryption to Quantum Computing: Literature Review}
 
 \section{Introduction to RSA Vulnerability}
-Rivest–Shamir–Adleman (RSA) encryption, a cornerstone of modern digital communication, provides security by transforming readable data into an unintelligible format that can only be reversed with a specific key~\cite{Okta}. This method relies on the computational difficulty of solving certain mathematical problems using classical computers~\cite{SecureW2}. However, as discussed in Chapter~\ref{chap:introduction}, the emergence of quantum computing presents a potential paradigm shift in computational power, threatening the security of widely used encryption algorithms like RSA~\cite{AuthoreaImplementation}. This chapter examines the fundamental principles of RSA encryption, the theoretical capability of quantum computers utilizing Shor's algorithm to compromise its security, the current state of quantum computing technology, the potential impact on cybersecurity, and the ongoing development of countermeasures in the form of post-quantum cryptography.
+Rivest -- Shamir -- Adleman (RSA) encryption, a cornerstone of modern digital communication, provides security by transforming readable data into an unintelligible format that can only be reversed with a specific key~\cite{Okta}. This method relies on the computational difficulty of solving certain mathematical problems using classical computers~\cite{SecureW2}. However, as discussed in Chapter~\ref{chap:introduction}, the emergence of quantum computing presents a potential paradigm shift in computational power, threatening the security of widely used encryption algorithms like RSA~\cite{AuthoreaImplementation}. This chapter examines the fundamental principles of RSA encryption, the theoretical capability of quantum computers utilizing Shor's algorithm to compromise its security, the current state of quantum computing technology, the potential impact on cybersecurity, and the ongoing development of countermeasures in the form of post-quantum cryptography.
 
 \section{RSA Encryption Fundamentals Review}
 RSA is an asymmetric encryption algorithm that employs a pair of mathematically linked keys: a public key and a private key~\cite{SecureW2}. The public key is freely available and used for encrypting messages, while the private key is kept confidential by the owner and is necessary for decryption~\cite{SecureW2}. This system eliminates the need for prior key sharing, a significant advantage over traditional symmetric encryption methods~\cite{SplunkRSA}. 
@@ -401,7 +381,7 @@ While the use of very large primes is essential for RSA security, it introduces 
 \end{itemize}
 
 \subsection{Importance of Large Primes in RSA}
-The use of very large primes is a cornerstone of RSA encryption, ensuring its robustness against classical attacks. The difficulty of factoring the product of two large primes underpins the security of RSA, making it a reliable cryptographic standard for decades. However, the emergence of quantum computing necessitates the development of quantum-resistant alternatives to address the vulnerabilities posed by quantum algorithms.
+Large primes are crucial for RSA's security, as factoring their product is computationally hard for classical methods. However, quantum computing's rise demands quantum-resistant cryptography to counter vulnerabilities from quantum algorithms.
 
 \section{Python Implementation of RSA Encryption and Decryption}
 The following Python code demonstrates the RSA encryption and decryption process using two different approaches:
@@ -414,9 +394,11 @@ Listing~\ref{lst:rsa_example_generic} provides a generic implementation of RSA e
     \item The \texttt{encrypt} function encrypts a plaintext message using the public key.
     \item The \texttt{decrypt} function decrypts the ciphertext using the private key.
 \end{itemize}
-
+\sloppy
 This implementation demonstrates the core concepts of RSA and is suitable for educational purposes.
 
+\hyphenpenalty=50
+\exhyphenpenalty=50
 \begin{lstlisting}[language=Python, caption=RSA Encryption and Decryption Example (Python 3.8+), label={lst:rsa_example_generic}]
 import random  # Random module for key generation
 from math import gcd  # GCD function for coprime check
@@ -430,7 +412,8 @@ def mod_exp(base, exp, mod):
         base = (base * base) % mod
         exp //= 2
     return result
-# RSA Key Generation
+
+# Function to generate RSA keys
 def generate_keys(p, q):
     n, phi = p * q, (p - 1) * (q - 1)
     e = random.randrange(2, phi)
@@ -448,7 +431,7 @@ def encrypt(message, public_key):
 def decrypt(ciphertext, private_key):
     d, n = private_key
     return ''.join([chr(mod_exp(char, d, n)) for char in ciphertext])
-\newpage
+
 # Example Usage
 p = int(input("Enter a prime number p: "))
 q = int(input("Enter a prime number q: "))
@@ -459,6 +442,9 @@ print("Original Message:", message)
 print("Encrypted Message:", encrypt(message, public_key))
 print("Decrypted Message:", decrypt(ciphertext, private_key))
 \end{lstlisting}
+
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
 
 \subsection{Cryptography Library-Based Implementation}
 Listing~\ref{lst:rsa_example} demonstrates an RSA implementation using the \texttt{cryptography} library in Python. This approach leverages built-in functions for key generation, encryption, and decryption, providing a more secure and efficient solution. For more details, refer to the official documentation at \href{https://cryptography.io/en/latest/hazmat/primitives/asymmetric/rsa/#}{cryptography}.
@@ -485,6 +471,8 @@ pip install cryptography
     \item \textbf{Community Support:} Actively maintained and widely used, ensuring reliability and access to community resources.
 \end{itemize}
 
+\hyphenpenalty=50
+\exhyphenpenalty=50
 \begin{lstlisting}[language=Python, caption=Python code for RSA encryption and decryption, label={lst:rsa_example}]
 from cryptography.hazmat.primitives.asymmetric import rsa, padding
 from cryptography.hazmat.primitives import serialization, hashes
@@ -565,7 +553,8 @@ print("Original Message:", message)
 print("Encrypted Message:", ciphertext)
 print("Decrypted Message:", decrypted_message)
 \end{lstlisting}
-
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
 
 \section{Vulnerabilities of RSA}
 While RSA is secure against classical attacks with sufficiently large key sizes, it has inherent vulnerabilities:
@@ -577,27 +566,12 @@ While RSA is secure against classical attacks with sufficiently large key sizes,
 \end{itemize}
 
 \section{Mitigation Strategies}
-To address these vulnerabilities, several strategies have been proposed, as depicted in Figure~\ref{fig:mitigation_strategies}:
+To address these vulnerabilities, several strategies have been proposed:
 \begin{itemize}
     \item \textbf{Increasing Key Sizes:} Using larger key sizes (e.g., 4096 bits) to enhance resistance against classical attacks.
     \item \textbf{Implementing Countermeasures:} Employing constant-time algorithms and secure random number generators to prevent side-channel attacks.
     \item \textbf{Transitioning to Quantum-Resistant Cryptography:} Developing and adopting cryptographic systems that are secure against quantum attacks.
 \end{itemize}
-
-\begin{figure}[ht!]%
-    \centering
-    \begin{tikzpicture}
-        % Nodes
-        \node[draw, rectangle, minimum width=4cm, minimum height=1cm] (keysize) at (0, 0) {Increase Key Sizes};
-        \node[draw, rectangle, minimum width=4cm, minimum height=1cm] (countermeasures) at (6, 0) {Implement Countermeasures};
-        \node[draw, rectangle, minimum width=4cm, minimum height=1cm] (quantum) at (3, -2) {Quantum-Resistant Cryptography};
-        
-        % Arrows
-        \draw[->] (keysize) -- (quantum) node[midway, left] {Transition};
-        \draw[->] (countermeasures) -- (quantum) node[midway, right] {Adoption};
-    \end{tikzpicture}
-    \caption{Diagram illustrating mitigation strategies for RSA vulnerabilities.}\label{fig:mitigation_strategies}
-\end{figure}
 
 \chapter{Quantum Mechanics and Its Role in Quantum Computing}
 \label{chap:quantum_mechanics}
@@ -614,7 +588,7 @@ In quantum systems, energy levels are quantized, meaning that a particle can onl
 \[
 E_n = -\frac{13.6 \, \text{eV}}{n^2},
 \]
-where \( n \) is a positive integer representing the principal quantum number.
+where \( n \) is a positive integer representing the principal quantum number. Here, \( 13.6 \, \text{eV} \) is the ionization energy of the hydrogen atom, which corresponds to the energy required to remove an electron from the ground state (\( n = 1 \)) to infinity (\( n \to \infty \)).
 
 \begin{figure}[H]
     \centering

@@ -37,6 +37,8 @@
 *.mtc0
 *.run.xml
 *.thm
+*.md5
+*.auxlock
 
 # Backup files
 *.bak
