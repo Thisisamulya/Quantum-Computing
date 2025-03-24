@@ -1103,6 +1103,30 @@ These drawbacks highlight the need for more advanced approaches, such as quantum
 \label{chap:shors_algorithm}
 Shor's algorithm is a quantum algorithm that can factorize large integers exponentially faster than classical algorithms. This chapter delves into the workings of Shor's algorithm and explains how it directly undermines the security of RSA encryption, making it vulnerable to quantum attacks.
 
+\section{Insights from "How Quantum Computers Break The Internet... Starting Now"}
+The YouTube video titled \textit{How Quantum Computers Break The Internet... Starting Now} by Veritasium~\cite{VeritasiumVideo} provides an engaging and detailed explanation of the potential impact of quantum computing on modern cryptographic systems, particularly RSA encryption. The video highlights several key points that align with the discussions in this report:
+
+\subsection{Store Now, Decrypt Later (SNDL) Threat}
+The video introduces the concept of \textit{Store Now, Decrypt Later} (SNDL), where adversaries intercept and store encrypted data today with the expectation that future quantum computers will be able to decrypt it. This emphasizes the urgency of transitioning to quantum-resistant cryptographic systems to protect sensitive information that remains valuable over time.
+
+\subsection{Shor's Algorithm and RSA Vulnerability}
+The video provides a simplified yet accurate explanation of Shor's algorithm and its ability to factorize large integers efficiently using quantum computers. It demonstrates how this capability directly threatens the security of RSA encryption, which relies on the computational difficulty of integer factorization.
+
+\subsection{Quantum Computing Progress and Challenges}
+The video discusses the current state of quantum computing technology, including the number of qubits required to break RSA encryption and the challenges of achieving stable, error-corrected qubits. It highlights the exponential progress in quantum computing and the potential timeline for when quantum computers might pose a practical threat to RSA.
+
+\subsection{Post-Quantum Cryptography}
+The video also touches on the development of quantum-resistant cryptographic algorithms, such as lattice-based cryptography, which are designed to withstand attacks from both classical and quantum computers. This aligns with the ongoing efforts by organizations like NIST to standardize post-quantum cryptographic systems.
+
+\subsection{Implications for Digital Security}
+The video underscores the broader implications of quantum computing for digital security, including the potential for mass surveillance, data breaches, and compromised financial systems. It calls for proactive measures to address these risks and ensure the continued security of digital communications.
+
+\subsection{Educational Value}
+The video serves as an excellent educational resource, breaking down complex topics like quantum mechanics, cryptography, and quantum algorithms into accessible explanations. It complements the technical discussions in this report by providing a broader context and real-world relevance.
+
+\subsection{Relevance to This Report}
+The insights from the video reinforce the importance of understanding the vulnerabilities of RSA encryption to quantum attacks and the need for quantum-resistant cryptographic systems. The video provides a compelling narrative that aligns with the technical analysis presented in this report, making it a valuable reference for readers seeking to grasp the implications of quantum computing on digital security.
+
 \chapter{Implications of Quantum Computing on Cryptography}
 The ability of quantum computers to break RSA encryption has far-reaching implications for cryptography. This chapter discusses the potential risks to digital security, including compromised financial transactions, data breaches, and threats to national security, emphasizing the urgency of addressing these challenges.
 
@@ -1280,6 +1304,8 @@ In conclusion, the transition to quantum-resistant cryptography is essential to 
     Google Online Security Blog. (2024).
     \textit{Post-Quantum Cryptography: Standards and Progress}.
     Retrieved March 23, 2025, from \url{https://security.googleblog.com/2024/08/post-quantum-cryptography-standards.html}.
+    \bibitem{VeritasiumVideo}
+    Veritasium. (2023). \textit{How Quantum Computers Break The Internet... Starting Now}. Retrieved from \url{https://youtu.be/-UrdExQW0cs}.
 \end{thebibliography}
 
 \end{document}
