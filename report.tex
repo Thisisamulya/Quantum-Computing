@@ -4,33 +4,27 @@
 \usepackage{hyperref}
 \usepackage{graphicx}
 \usepackage{geometry}
+\usepackage[none]{hyphenat}
 \usepackage{tikz}
 \usepackage{float}
+% Ensure valid float specifiers are used
 
-\usetikzlibrary{external, shapes.geometric, arrows, arrows.meta}
+\usetikzlibrary{external, shapes.geometric, arrows, arrows.meta, decorations.pathmorphing}
+% \tikzexternalize % Enable TikZ externalization
 \graphicspath{{images/}}
-
-% \tikzexternalize[mode=list and make]
-
-\tikzset{
-    png export/.style={
-        % First we call ImageMagick; change settings to requirements
-        external/system call/.add={}{; magick convert -density 300 -transparent white "\image.pdf" "\image.png"},
-        % Now we force the PNG figure to be used instead of the PDF
-        /pgf/images/external info,
-        /pgf/images/include external/.code={
-            \includegraphics[width=\pgfexternalwidth,height=\pgfexternalheight]{##1.png}
-        },
-    }
-}
 
 % Define python style for highlighting code
 \usepackage{listings}
 \definecolor{deepgray}{rgb}{0.4, 0.4, 0.4}
 \usepackage{color}
-\definecolor{deepblue}{rgb}{0,0,0.5}
+\definecolor{deepblue}{rgb}{0,0,0.6}
 \definecolor{deepred}{rgb}{0.6,0,0}
 \definecolor{deepgreen}{rgb}{0,0.5,0}
+
+% code RGB
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
 
 \definecolor{codegreen}{rgb}{0,0.6,0}
 \definecolor{codegray}{rgb}{0.5,0.5,0.5}
@@ -58,7 +52,8 @@
     tabsize=2
 }
 
-\lstdefinelanguage{Python}{
+% Define python style for highlighting code
+\lstdefinestyle{pythonstyle}{
     keywords={and, as, assert, break, class, continue, def, del, elif, else, except, False, finally, for, from, global, if, import, in, is, lambda, None, nonlocal, not, or, pass, raise, return, True, try, while, with, yield},
     keywordstyle=\color{deepblue}\bfseries,
     ndkeywords={self},
@@ -69,8 +64,20 @@
     commentstyle=\color{deepgreen}\ttfamily,
     stringstyle=\color{deepred}\ttfamily,
     morestring=[b]',
-    morestring=[b]``
+    morestring=[b]``,
+    basicstyle=\ttfamily,
+    breakatwhitespace=false,
+    breaklines=true,
+    captionpos=b,
+    keepspaces=true,
+    numbers=left,
+    numbersep=5pt,
+    showspaces=false,
+    showstringspaces=false,
+    showtabs=false,
+    tabsize=2
 }
+
 \lstdefinestyle{mystyle}{
     backgroundcolor=\color{white},
     commentstyle=\color{deepgreen},
@@ -90,14 +97,18 @@
     showtabs=false,
     tabsize=2
 }
-\lstset{style=mystyle}
+
+\lstset{style=graystyle}
 
 
 \geometry{a4paper, margin=1in}
 
 \title{Advantage of Quantum Computing in Breaking RSA Encryption}
-\author{Your Name \\ Roll No: Your Roll Number \\ Guide: Guide Name}
+\author{Srinivas Rao Tammireddy \\ Roll No: 217Y1A05C0 \\ Guide: Dr. S. Prathap Singh}
 \date{\today}
+
+\sloppy % Allow LaTeX to adjust spacing to avoid underfull hbox warnings
+
 
 \begin{document}
 
@@ -115,12 +126,13 @@ Signature of Student
 \newpage
 
 \tableofcontents
+\listoffigures
 \newpage
 
 \chapter*{Abstract}
 Quantum computing has emerged as a revolutionary paradigm in computation, offering significant advantages over classical computing for certain types of problems. One of the most notable implications of quantum computing is its potential to break widely used cryptographic systems, such as RSA encryption. This report explores the principles of RSA encryption, the capabilities of quantum computing, and how quantum algorithms, particularly Shor's algorithm, pose a threat to the security of RSA\@. The report also discusses the implications of this threat and the need for quantum-resistant cryptographic systems.
-
 \chapter{Introduction to RSA Encryption and Quantum Computing}
+\label{chap:introduction}
 
 RSA encryption is a cornerstone of modern cryptography, widely used to secure digital communications. Its security is based on the computational difficulty of factoring large integers, a problem that classical computers find infeasible to solve within a reasonable timeframe. However, the advent of quantum computing introduces a paradigm shift in computational capabilities. Quantum computers, leveraging principles such as superposition and entanglement, can solve certain problems exponentially faster than classical computers. This chapter provides an overview of RSA encryption, its working principles, its critical role in ensuring secure communication, and the potential impact of quantum computing on its security.
 
@@ -151,6 +163,33 @@ The computational power of quantum computers poses a significant threat to RSA e
 
 This report will delve into the mathematical foundation of RSA encryption, the vulnerabilities of RSA to quantum attacks, and the implications of quantum computing on digital security. It will also explore the existing methods for breaking RSA encryption, the drawbacks of these methods, and the advantages of transitioning to quantum-resistant cryptographic systems. The report will conclude with a discussion on the future enhancements and applications of quantum-resistant cryptography.
 
+\chapter{The Vulnerability of RSA Encryption to Quantum Computing: Literature Review}
+
+\section{Introduction to RSA Vulnerability}
+Rivest–Shamir–Adleman (RSA) encryption, a cornerstone of modern digital communication, provides security by transforming readable data into an unintelligible format that can only be reversed with a specific key~\cite{Okta}. This method relies on the computational difficulty of solving certain mathematical problems using classical computers~\cite{SecureW2}. However, as discussed in Chapter~\ref{chap:introduction}, the emergence of quantum computing presents a potential paradigm shift in computational power, threatening the security of widely used encryption algorithms like RSA~\cite{AuthoreaImplementation}. This chapter examines the fundamental principles of RSA encryption, the theoretical capability of quantum computers utilizing Shor's algorithm to compromise its security, the current state of quantum computing technology, the potential impact on cybersecurity, and the ongoing development of countermeasures in the form of post-quantum cryptography.
+
+\section{RSA Encryption Fundamentals Review}
+RSA is an asymmetric encryption algorithm that employs a pair of mathematically linked keys: a public key and a private key~\cite{SecureW2}. The public key is freely available and used for encrypting messages, while the private key is kept confidential by the owner and is necessary for decryption~\cite{SecureW2}. This system eliminates the need for prior key sharing, a significant advantage over traditional symmetric encryption methods~\cite{SplunkRSA}. 
+
+The security of RSA hinges on the generation of these keys, which involves selecting two large prime numbers, denoted as \(p\) and \(q\)~\cite{SecureW2}. These primes are multiplied to produce a modulus \(n\), which forms part of both the public and private keys~\cite{SecureW2}. The public key consists of the pair \((n, e)\), where \(e\) is the encryption exponent. The private key includes \(n\) and a decryption exponent \(d\), which is the modular multiplicative inverse of \(e\) modulo \(\phi(n)\), where \(\phi(n)\) is Euler's totient function calculated as \((p - 1) \cdot (q - 1)\)~\cite{GeeksForGeeks}. 
+
+Encryption involves raising the plaintext message \(m\) to the power of \(e\) and taking the modulus of \(n\) to obtain the ciphertext \(C\) (\(C = m^e \bmod n\))~\cite{GeeksForGeeks}. Decryption reverses this process by raising the ciphertext \(C\) to the power of \(d\) and taking the modulus of \(n\) to retrieve the original message \(m\) (\(m = C^d \bmod n\))~\cite{GeeksForGeeks}. This process is further illustrated in Chapter~\ref{sec:key_generation}.
+
+\section{Mathematical Foundation of RSA Security Analysis}
+The security of RSA encryption is fundamentally based on the computational difficulty of factoring large integers, specifically the modulus \(n\), back into its original prime factors \(p\) and \(q\)~\cite{SecureW2}. While multiplying two large prime numbers is a computationally straightforward task, reversing this process to find the prime factors of their product becomes exponentially harder as the size of the numbers increases~\cite{SecureW2}.
+
+The RSA problem is defined as the task of recovering the original message given only the public key \((n, e)\) and the ciphertext~\cite{RSAWiki}. The most efficient known classical method to solve this problem involves factoring the modulus \(n\). The length of the RSA key, typically 1024 or 2048 bits, determines the size of the modulus \(n\). Larger key lengths result in significantly larger numbers, making factorization practically infeasible for classical computers within a reasonable timeframe~\cite{SecureW2}. For instance, factoring a 2048-bit number using classical methods would take an estimated 300 trillion years~\cite{ODUCommons}. This computational barrier is the cornerstone of RSA's security~\cite{SoftwareDominos}, as also discussed in Chapter~\ref{chap:existing_methods}.
+
+\section{Shor's Algorithm: A Quantum Approach}
+In 1994, Peter Shor developed a quantum algorithm that possesses the theoretical capability to factorize large integers exponentially faster than the best-known classical algorithms~\cite{SpinQShor}. Shor's algorithm leverages the principles of quantum mechanics, such as superposition and quantum parallelism, to perform computations in a fundamentally different way than classical computers~\cite{AuthoreaImplementation}. The principles of quantum mechanics underlying this algorithm are detailed in Chapter~\ref{chap:quantum_mechanics}.
+
+The algorithm consists of two main stages: a classical reduction of the factorization problem to the problem of finding the period of a modular function, followed by the use of the Quantum Fourier Transform (QFT) on a quantum computer to efficiently determine this period~\cite{SpinQShor}. Once the period is found, the prime factors of the original number can be derived through classical post-processing using techniques like Euclid's algorithm to find the greatest common divisor~\cite{TechRxivImplementation}.
+
+The ability of Shor's algorithm to solve the integer factorization problem in polynomial time poses a direct threat to the security of RSA encryption, as it could potentially allow an attacker with a sufficiently powerful quantum computer to efficiently derive the private key from the public key~\cite{SpinQShor}. This threat is further elaborated in Chapter~\ref{sec:key_generation}.
+
+Quantum computers are not yet advanced enough to break RSA-2048 encryption due to limitations in stable qubits and error correction~\cite{SpinQShor, CatoNetworks}. Estimates suggest 4,000 to 20 million logical qubits are needed~\cite{BTQHowFar}. The largest number factored so far is 21~\cite{SpinQShor}, and hybrid approaches have only tackled very small keys~\cite{FreemindtronicRSA}. This aligns with the challenges in Chapter~\ref{sec:challenge_quantum_computing}.
+
+
 \chapter{Background on RSA Encryption and Its Vulnerabilities}
 The existing cryptographic systems, including RSA, rely on the computational difficulty of certain mathematical problems, such as integer factorization. Classical computers are unable to solve these problems efficiently, which forms the basis of RSA's security. This chapter discusses the existing system and its reliance on classical computational limitations.
 
@@ -158,9 +197,10 @@ The existing cryptographic systems, including RSA, rely on the computational dif
 The RSA cryptosystem, introduced by Rivest, Shamir, and Adleman in 1978~\cite{Rivest1978}, is based on the mathematical principles of number theory and modular arithmetic.
 
 \section{Key Generation Process}
+\label{sec:key_generation}
 The RSA key generation process involves the following steps:
 \begin{enumerate}
-    \item Select two large prime numbers, \(p\) and \(q\).
+    \item Select two large prime numbers, \(p\) and \(q\) (typically 1024 bits or more).
     \item Compute their product, \(n = p \times q\), which serves as the modulus.
     \item Calculate the totient, \(\phi(n) = (p-1)(q-1)\).
     \item Choose a public exponent, \(e\), such that \(1 < e < \phi(n)\) and \(\gcd(e, \phi(n)) = 1\).
@@ -171,7 +211,6 @@ As shown in Figure~\ref{fig:key_generation}, this process ensures the generation
 
 \begin{figure}[ht!]
     \centering
-    \tikzset{png export}
     \begin{tikzpicture}
         % Draw the nodes
         \node[draw, rectangle, minimum width=3cm, minimum height=1cm] (p) at (0, 0) {\(p\): Large Prime};
@@ -188,7 +227,7 @@ As shown in Figure~\ref{fig:key_generation}, this process ensures the generation
         \draw[->] (phi) -- (e) node[midway, left] {\(\gcd(e, \phi(n)) = 1\)};
         \draw[->] (phi) -- (d) node[midway, right] {\(e \cdot d \equiv 1 \pmod{\phi(n)}\)};
     \end{tikzpicture}
-    \caption{Diagram illustrating the RSA key generation process.}%
+    \caption[Key Generation]{Diagram illustrating the RSA key generation process.}%
     \label{fig:key_generation}
 \end{figure}
 
@@ -210,7 +249,7 @@ M \equiv C^d \pmod{n}.
 
 Figure~\ref{fig:encryption_decryption} illustrates the encryption and decryption process.
 
-\begin{figure}[h!]
+\begin{figure}[ht!]%
     \centering
     \begin{tikzpicture}
         % Nodes
@@ -226,7 +265,7 @@ Figure~\ref{fig:encryption_decryption} illustrates the encryption and decryption
         \draw[->] (ciphertext) -- (decryption) node[midway, right] {Private Key \((d, n)\)};
         \draw[->] (decryption) -- (recovered) node[midway, above] {Original Message};
         \end{tikzpicture}
-    \caption{Diagram illustrating the RSA encryption and decryption process.}%
+    \caption[Encryption and Decryption]{Diagram illustrating the RSA encryption and decryption process.}%
     \label{fig:encryption_decryption}
 \end{figure}
 
@@ -300,11 +339,34 @@ The correctness of the decryption process is guaranteed by Euler's theorem, whic
 \[
 M^{\phi(n)} \equiv 1 \pmod{n},
 \]
-for any integer \( M \) coprime to \( n \). Since \( e \cdot d \equiv 1 \pmod{\phi(n)} \), it follows that:
+for any integer \( M \) coprime to \( n \). Here, \( \phi(n) \) is the Euler totient function, which gives the number of positive integers less than \( n \) that are relatively prime to \( n \). For prime numbers \( p \), we have:
 \[
-M^{e \cdot d} \equiv M \pmod{n}.
+\phi(p) = p - 1.
 \]
-This ensures that decryption correctly recovers the original message \( M \).
+
+In the case of RSA, where \( n = p \cdot q \) (the product of two primes), the totient function is given by:
+\[
+\phi(n) = \phi(p) \cdot \phi(q) = (p - 1) \cdot (q - 1).
+\]
+
+Since \( d \) is chosen such that it is relatively prime to \( \phi(n) \), it has a multiplicative inverse \( e \) modulo \( \phi(n) \), satisfying:
+\[
+e \cdot d \equiv 1 \pmod{\phi(n)}.
+\]
+
+To prove the correctness of decryption, consider the encryption and decryption processes:
+\[
+D(E(M)) \equiv (E(M))^d \equiv (M^e)^d \pmod{n} = M^{e \cdot d} \pmod{n}.
+\]
+
+Using the property \( e \cdot d = k \cdot \phi(n) + 1 \) for some integer \( k \), we can rewrite:
+\[
+M^{e \cdot d} = M^{k \cdot \phi(n) + 1} \equiv M \pmod{n}.
+\]
+
+This follows from Euler's theorem, which ensures that \( M^{\phi(n)} \equiv 1 \pmod{n} \) for any \( M \) coprime to \( n \). Thus, the decryption process correctly recovers the original message \( M \).
+
+Furthermore, for all \( M \), including cases where \( M \) is divisible by \( p \) or \( q \), the above equality holds due to the Chinese Remainder Theorem. Therefore, the encryption and decryption functions \( E \) and \( D \) are inverse permutations, ensuring the correctness of RSA~\cite{Rivest1978}.
 
 \section{Very Large Primes in RSA}
 The security of RSA encryption heavily relies on the use of very large prime numbers. These primes are chosen to ensure that the modulus \( n = p \times q \) is sufficiently large, making factorization computationally infeasible for classical computers.
@@ -341,14 +403,24 @@ While the use of very large primes is essential for RSA security, it introduces 
 \subsection{Importance of Large Primes in RSA}
 The use of very large primes is a cornerstone of RSA encryption, ensuring its robustness against classical attacks. The difficulty of factoring the product of two large primes underpins the security of RSA, making it a reliable cryptographic standard for decades. However, the emergence of quantum computing necessitates the development of quantum-resistant alternatives to address the vulnerabilities posed by quantum algorithms.
 
-% Python code for RSA encryption and decryption
 \section{Python Implementation of RSA Encryption and Decryption}
-The following Python code demonstrates the RSA encryption and decryption process:
+The following Python code demonstrates the RSA encryption and decryption process using two different approaches:
 
+\subsection{Generic RSA Implementation}
+Listing~\ref{lst:rsa_example_generic} provides a generic implementation of RSA encryption and decryption in Python. It includes functions for key generation, encryption, and decryption, showcasing the mathematical principles of RSA.
 
-As shown in Listing~\ref{lst:rsa_example_generic}, the Python implementation demonstrates the RSA encryption and decryption process.
+\begin{itemize}
+    \item The \texttt{generate\_keys} function generates public and private keys using two prime numbers.
+    \item The \texttt{encrypt} function encrypts a plaintext message using the public key.
+    \item The \texttt{decrypt} function decrypts the ciphertext using the private key.
+\end{itemize}
 
-\begin{lstlisting}[language=Python, caption=RSA Encryption and Decryption Example, label={lst:rsa_example_generic}]
+This implementation demonstrates the core concepts of RSA and is suitable for educational purposes.
+
+\begin{lstlisting}[language=Python, caption=RSA Encryption and Decryption Example (Python 3.8+), label={lst:rsa_example_generic}]
+import random  # Random module for key generation
+from math import gcd  # GCD function for coprime check
+from sympy import mod_inverse  # Modular inverse calculation
 # Function to compute modular exponentiation
 def mod_exp(base, exp, mod):
     result = 1
@@ -358,16 +430,14 @@ def mod_exp(base, exp, mod):
         base = (base * base) % mod
         exp //= 2
     return result
-
 # RSA Key Generation
-def generate_keys():
-    p = 61  # Example prime number
-    q = 53  # Example prime number
-    n = p * q
-    phi = (p - 1) * (q - 1)
-    e = 17  # Public exponent (must be coprime with phi)
-    d = pow(e, -1, phi)  # Private exponent (modular inverse of e mod phi)
-    return (e, n), (d, n)
+def generate_keys(p, q):
+    n, phi = p * q, (p - 1) * (q - 1)
+    e = random.randrange(2, phi)
+    while gcd(e, phi) != 1:
+        e = random.randrange(2, phi)
+    d = mod_inverse(e, phi)
+    return (e, n), (d, n)  # Public key, Private key
 
 # RSA Encryption
 def encrypt(message, public_key):
@@ -378,45 +448,124 @@ def encrypt(message, public_key):
 def decrypt(ciphertext, private_key):
     d, n = private_key
     return ''.join([chr(mod_exp(char, d, n)) for char in ciphertext])
-
+\newpage
 # Example Usage
-public_key, private_key = generate_keys()
-message = "HELLO"
-ciphertext = encrypt(message, public_key)
-decrypted_message = decrypt(ciphertext, private_key)
+p = int(input("Enter a prime number p: "))
+q = int(input("Enter a prime number q: "))
+public_key, private_key = generate_keys(p, q)
 
+message = "HELLO"
 print("Original Message:", message)
-print("Encrypted Message:", ciphertext)
-print("Decrypted Message:", decrypted_message)
+print("Encrypted Message:", encrypt(message, public_key))
+print("Decrypted Message:", decrypt(ciphertext, private_key))
 \end{lstlisting}
 
-As shown in Listing~\ref{lst:rsa_example}, the Python implementation demonstrates the RSA encryption and decryption process.
+\subsection{Cryptography Library-Based Implementation}
+Listing~\ref{lst:rsa_example} demonstrates an RSA implementation using the \texttt{cryptography} library in Python. This approach leverages built-in functions for key generation, encryption, and decryption, providing a more secure and efficient solution. For more details, refer to the official documentation at \href{https://cryptography.io/en/latest/hazmat/primitives/asymmetric/rsa/#}{cryptography}.
+
+\begin{itemize}
+    \item The {\texttt{generate\_rsa\_keys}} function generates RSA key pairs and serializes them in PEM format.
+    \item The \texttt{encrypt\_message} function encrypts a message using the public key and OAEP padding.
+    \item The \texttt{decrypt\_message} function decrypts the ciphertext using the private key and OAEP padding.
+\end{itemize}
+
+This implementation is suitable for real-world applications, as it adheres to modern cryptographic standards.
+
+\subsubsection{Library Installation}
+To use the \texttt{cryptography} library, install it using the following command:
+\begin{lstlisting}[language=bash]
+pip install cryptography
+\end{lstlisting}
+
+\subsubsection{Advantages of Using the \texttt{cryptography} Library}
+\begin{itemize}
+    \item \textbf{Security:} The library adheres to modern cryptographic standards, ensuring robust security for encryption and decryption.
+    \item \textbf{Ease of Use:} Provides high-level APIs for common cryptographic operations, reducing the complexity of implementation.
+    \item \textbf{Performance:} Optimized for performance, making it suitable for real-world applications.
+    \item \textbf{Community Support:} Actively maintained and widely used, ensuring reliability and access to community resources.
+\end{itemize}
 
 \begin{lstlisting}[language=Python, caption=Python code for RSA encryption and decryption, label={lst:rsa_example}]
-from Crypto.Util.number import bytes_to_long, long_to_bytes
-from Crypto.PublicKey import RSA
-from Crypto.Random import get_random_bytes
-from Crypto.Cipher import PKCS1_OAEP
+from cryptography.hazmat.primitives.asymmetric import rsa, padding
+from cryptography.hazmat.primitives import serialization, hashes
 
-# Generate RSA keys
-key = RSA.generate(2048)
-private_key = key.export_key()
-public_key = key.publickey().export_key()
+def generate_rsa_keys() -> tuple[bytes, bytes]:
+    '''
+    Generate RSA public and private keys.
 
-# Encrypt a message
+    Returns:
+        tuple[bytes, bytes]: A tuple containing the private key and public key in PEM format.
+    '''
+    private_key = rsa.generate_private_key(
+        public_exponent=65537,
+        key_size=2048
+    )
+    public_key = private_key.public_key()
+    return (
+        private_key.private_bytes(
+            encoding=serialization.Encoding.PEM,
+            format=serialization.PrivateFormat.PKCS8,
+            encryption_algorithm=serialization.NoEncryption()
+        ),
+        public_key.public_bytes(
+            encoding=serialization.Encoding.PEM,
+            format=serialization.PublicFormat.SubjectPublicKeyInfo
+        )
+    )
+def encrypt_message(public_key_pem: bytes, message: bytes) -> bytes:
+    '''
+    Encrypt a message using an RSA public key.
+
+    Args:
+        public_key_pem (bytes): The public key in PEM format.
+        message (bytes): The plaintext message to encrypt.
+
+    Returns:
+        bytes: The encrypted ciphertext.
+    '''
+    public_key = serialization.load_pem_public_key(public_key_pem)
+    return public_key.encrypt(
+        message,
+        padding.OAEP(
+            mgf=padding.MGF1(algorithm=hashes.SHA256()),
+            algorithm=hashes.SHA256(),
+            label=None
+        )
+    )
+
+def decrypt_message(private_key_pem: bytes, ciphertext: bytes) -> bytes:
+    '''
+    Decrypt a ciphertext using an RSA private key.
+
+    Args:
+        private_key_pem (bytes): The private key in PEM format.
+        ciphertext (bytes): The encrypted ciphertext to decrypt.
+
+    Returns:
+        bytes: The decrypted plaintext message.
+    '''
+    private_key = serialization.load_pem_private_key(private_key_pem, password=None)
+    return private_key.decrypt(
+        ciphertext,
+        padding.OAEP(
+            mgf=padding.MGF1(algorithm=hashes.SHA256()),
+            algorithm=hashes.SHA256(),
+            label=None
+        )
+    )
+
+# Example usage
+private_key_pem, public_key_pem = generate_rsa_keys()
 message = b"Hello, Quantum World!"
-cipher = PKCS1_OAEP.new(RSA.import_key(public_key))
-ciphertext = cipher.encrypt(message)
-
-# Decrypt the message
-decipher = PKCS1_OAEP.new(RSA.import_key(private_key))
-decrypted_message = decipher.decrypt(ciphertext)
+ciphertext = encrypt_message(public_key_pem, message)
+decrypted_message = decrypt_message(private_key_pem, ciphertext)
 
 # Print results
 print("Original Message:", message)
 print("Encrypted Message:", ciphertext)
 print("Decrypted Message:", decrypted_message)
 \end{lstlisting}
+
 
 \section{Vulnerabilities of RSA}
 While RSA is secure against classical attacks with sufficiently large key sizes, it has inherent vulnerabilities:
@@ -435,7 +584,7 @@ To address these vulnerabilities, several strategies have been proposed, as depi
     \item \textbf{Transitioning to Quantum-Resistant Cryptography:} Developing and adopting cryptographic systems that are secure against quantum attacks.
 \end{itemize}
 
-\begin{figure}[h!]
+\begin{figure}[ht!]%
     \centering
     \begin{tikzpicture}
         % Nodes
@@ -450,138 +599,358 @@ To address these vulnerabilities, several strategies have been proposed, as depi
     \caption{Diagram illustrating mitigation strategies for RSA vulnerabilities.}\label{fig:mitigation_strategies}
 \end{figure}
 
-
-\chapter{Quantum Mechanics: The Foundation of Quantum Computing}
+\chapter{Quantum Mechanics and Its Role in Quantum Computing}
+\label{chap:quantum_mechanics}
 Quantum mechanics is the branch of physics that describes the behavior of matter and energy at the smallest scales, such as atoms and subatomic particles. It forms the theoretical foundation of quantum computing, enabling the development of algorithms that outperform classical counterparts for specific problems.
 
 \section{Principles of Quantum Mechanics}
 Quantum mechanics is governed by several key principles that distinguish it from classical physics:
 
-\begin{itemize}
-    \item \textbf{Superposition:} 
-    Superposition is a fundamental principle of quantum mechanics that allows quantum systems to exist in multiple states simultaneously. In the context of quantum computing, a quantum bit (qubit) can represent both \( |0\rangle \) and \( |1\rangle \) at the same time, unlike classical bits that can only represent one state at a time. Mathematically, a qubit in superposition is represented as:
-    \[
-    |\psi\rangle = \alpha |0\rangle + \beta |1\rangle,
-    \]
-    where \( \alpha \) and \( \beta \) are complex numbers satisfying \( |\alpha|^2 + |\beta|^2 = 1 \). This property enables quantum computers to process a vast number of possibilities simultaneously, leading to exponential speedups for certain types of problems.
-    \begin{figure}[H]
-        \centering
-            \begin{tikzpicture}[line cap=round, line join=round, >=Stealth]
-            
-            % Draw the outer sphere
-            \draw[thick] (0,0) circle (2cm);
-            
-            % Draw the equatorial plane (dashed ellipse)
-            \draw[dash pattern=on 3pt off 3pt] (0,0) ellipse (2cm and 0.9cm);
-            
-            % Highlight angles
-            \draw[shift={(0,0)}, lightgray, fill, fill opacity=0.1] (0,0) -- (56.7:0.4) arc (56.7:90:0.4) -- cycle;
-            \draw[shift={(0,0)}, lightgray, fill, fill opacity=0.1] (0,0) -- (-135.7:0.4) arc (-135.7:-33.2:0.4) -- cycle;
+\subsection{Quantization of Physical Properties}
+Quantization is a fundamental concept in quantum mechanics, where certain physical properties, such as energy, angular momentum, and charge, can only take on discrete values. This is in contrast to classical mechanics, where these properties are continuous.
+
+\subsubsection{Energy Quantization}
+In quantum systems, energy levels are quantized, meaning that a particle can only occupy specific energy states. For example, the energy levels of an electron in a hydrogen atom are given by:
+\[
+E_n = -\frac{13.6 \, \text{eV}}{n^2},
+\]
+where \( n \) is a positive integer representing the principal quantum number.
+
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}
+        % Energy levels
+        \draw[thick] (0,0) -- (4,0) node[right] {\( n = 1 \)};
+        \draw[thick] (0,1.5) -- (4,1.5) node[right] {\( n = 2 \)};
+        \draw[thick] (0,2.5) -- (4,2.5) node[right] {\( n = 3 \)};
+        \draw[thick] (0,3.2) -- (4,3.2) node[right] {\( n = 4 \)};
+        \draw[dotted] (0,4) -- (4,4) node[right] {Continuum};
+        % Labels
+        \node[left] at (0,0) {\(-13.6 \, \text{eV}\)};
+        \node[left] at (0,1.5) {\(-3.4 \, \text{eV}\)};
+        \node[left] at (0,2.5) {\(-1.51 \, \text{eV}\)};
+        \node[left] at (0,3.2) {\(-0.85 \, \text{eV}\)};
+    \end{tikzpicture}
+    \caption{Discrete energy levels of an electron in a hydrogen atom.}
+\end{figure}
+
+\subsubsection{Angular Momentum Quantization}
+The angular momentum of a particle is also quantized. For example, the magnitude of the angular momentum of an electron in an atom is given by:
+\[
+L = \sqrt{\ell(\ell + 1)} \hbar,
+\]
+where \( \ell \) is the orbital quantum number, and \( \hbar \) is the reduced Planck's constant.
+
+\subsubsection{Charge Quantization}
+Electric charge is quantized in units of the elementary charge \( e \). For example, the charge of an electron is \( -e \), and the charge of a proton is \( +e \).
+
+Quantization is a cornerstone of quantum mechanics, providing the framework for understanding the discrete nature of physical phenomena at microscopic scales.
+
+\subsection{Wave-Particle Duality}
+Wave-particle duality is a fundamental concept in quantum mechanics, stating that quantum entities, such as electrons and photons, exhibit both wave-like and particle-like behavior depending on the experimental setup. For example, in the double-slit experiment, particles like electrons create an interference pattern when not observed, demonstrating wave-like behavior. However, when observed, they behave like particles, striking specific locations on a detector.
+
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}
+        % Slits
+        \draw[thick] (0,0) -- (0,4);
+        \draw[thick] (0.5,1) -- (0.5,1.5);
+        \draw[thick] (0.5,2.5) -- (0.5,3);
+        % Waves
+        \draw[thick, blue, domain=0.5:4, samples=100] plot (\x, {2 + 0.5*sin(3*\x r)});
+        \draw[thick, blue, domain=0.5:4, samples=100] plot (\x, {1 + 0.5*sin(3*\x r)});
+        % Detector
+        \draw[thick] (5,0) -- (5,4);
+        \node[align=center] at (5.5,2) {Interference \\ Pattern};
+    \end{tikzpicture}
+    \caption{Wave-particle duality demonstrated in the double-slit experiment.}
+\end{figure}
+
+\subsection{Uncertainty Principle (Heisenberg's Principle)}
+The uncertainty principle, formulated by Werner Heisenberg, is a fundamental concept in quantum mechanics. It states that certain pairs of physical properties, such as position (\(x\)) and momentum (\(p\)), cannot be simultaneously measured with arbitrary precision. Mathematically, the principle is expressed as:
+\[
+\Delta x \cdot \Delta p \geq \frac{\hbar}{2},
+\]
+\begin{figure}[H]
+     \centering
+        \begin{tikzpicture}
+            % Uncertainty ellipse
+            \fill[blue!10] (0,0) ellipse (2 and 1);
             
             % Axes
-            \draw[->, thick, gray] (0,0) -- (0,2) node[anchor=south, black] {$\hat{z}=|0\rangle$};
-            \draw[->, thick, gray] (0,0) -- (2,0) node[anchor=west, black] {$\hat{y}$};
-            \draw[->, thick, gray] (0,0) -- (-0.81,-0.79) node[anchor=north east, black] {$\hat{x}$};
-            \draw[->, thick, gray] (0,0) -- (0,-2) node[anchor=north, black] {$-\hat{z}=|1\rangle$};
+            \draw[->] (-3,0) -- (3,0) node[anchor=south west] {Position (\(x\))};
+            \draw[->] (0,-2) -- (0,2) node[anchor=west] {Momentum (\(p\))};
             
-            % Qubit state vector
-            \draw[thick, ->, blue] (0,0) -- (0.7,1.07) node[anchor=south west] {$|\psi\rangle$};
+            % Uncertainty ellipse with soft shading
+            \draw[thick, blue!70] (0,0) ellipse (2 and 1);
             
-            % Projection lines
-            \draw[dotted] (0.7,1.07) -- (0.7,-0.46);
-            \draw[dotted] (0,0) -- (0.7,-0.46);
-            
-            % Angle labels
-            \node at (-0.15,-0.6) {$\phi$};
-            \node at (0.25,0.85) {$\theta$}; % Adjusted theta position slightly to the right
-            
-            % State label moved to the side
-            \node[align=left, font=\small, anchor=west] at (3,0) {$|\psi\rangle = \cos\left(\frac{\theta}{2}\right)|0\rangle + e^{i\phi}\sin\left(\frac{\theta}{2}\right)|1\rangle$};
-            
-            % Markers
-            \draw[fill] (0,0) circle (1.5pt); % Origin
-            \draw[fill, blue] (0.7,1.07) circle (1pt); % Qubit state
+            % Labels for axes
+            \node[anchor=north east] at (-2,0) {\(-\Delta x\)};
+            \node[anchor=north west] at (2,0) {\(\Delta x\)};
+            \node[anchor=south east] at (0,-1) {\(-\Delta p\)};
+            \node[anchor=north east] at (0,1) {\(\Delta p\)};
         \end{tikzpicture}
-        \caption{Representation of a qubit on the Bloch sphere, showing the state \( |\psi\rangle = \cos\left(\frac{\theta}{2}\right)|0\rangle + e^{i\phi}\sin\left(\frac{\theta}{2}\right)|1\rangle \) with angles \( \theta \) and \( \phi \). The vector \( |\psi\rangle \) is shown in blue, illustrating that the atom is in a superposition of states \( |0\rangle \) and \( |1\rangle \) simultaneously.}
-        \end{figure}
+        \caption[Uncertainty Principle]{Graphical representation of the uncertainty principle. The softly shaded ellipse illustrates the trade-off between uncertainties in position (\(x\)) and momentum (\(p\)).}
+\end{figure}
 
-    \begin{figure}[H]
-        \centering
-        \begin{tikzpicture}
-            % Energy levels
-            \draw[thick] (0,0) -- (3,0) node[midway, above] {Ground State};
-            \draw[thick] (0,2) -- (3,2) node[midway, above] {Excited State};
-            % Electron transition
-            \draw[->, thick, blue] (1.5,0) -- (1.5,2) node[midway, right] {Radiation};
-        \end{tikzpicture}
-        \caption{Electron transition from ground state to excited state upon exposure to radiation.}
-    \end{figure}
-
-    \item \textbf{Entanglement:} 
-    Entanglement is a unique quantum phenomenon where two or more quantum particles become interconnected in such a way that the state of one particle is directly related to the state of the other, regardless of the distance between them. For example, the entangled state of two qubits can be represented as:
-    \[
-    |\psi\rangle = \frac{1}{\sqrt{2}} \left( |00\rangle + |11\rangle \right).
-    \]
-    This correlation persists even if the particles are separated by vast distances. In quantum computing, entanglement is used to create highly efficient communication and computation protocols.
-
-    \begin{figure}[H]
-        \centering
-        \begin{tikzpicture}
-            % Nodes
-            \node[circle, draw, minimum size=1cm] (q1) at (0,0) {\( q_1 \)};
-            \node[circle, draw, minimum size=1cm] (q2) at (4,0) {\( q_2 \)};
-            % Connection
-            \draw[thick] (q1) -- (q2) node[midway, above] {Entanglement};
-        \end{tikzpicture}
-        \caption{Illustration of entangled qubits \( q_1 \) and \( q_2 \).}
-    \end{figure}
-
-    \item \textbf{Quantum Interference:} 
-    Quantum interference arises from the wave-like nature of quantum particles. When quantum states overlap, their probability amplitudes can interfere constructively or destructively. Constructive interference amplifies the probability of correct solutions, while destructive interference cancels out incorrect ones. For example, in a quantum algorithm, the interference can be represented as:
-    \[
-    |\psi\rangle = \frac{1}{\sqrt{2}} \left( |0\rangle + |1\rangle \right) + \frac{1}{\sqrt{2}} \left( |0\rangle - |1\rangle \right) = |0\rangle.
-    \]
-
-    \begin{figure}[H]
-        \centering
-        \begin{tikzpicture}
-            % Waves
-            \draw[thick, blue, domain=0:6.28, samples=100] plot (\x, {sin(\x r)});
-            \draw[thick, red, domain=0:6.28, samples=100] plot (\x, {cos(\x r)});
-            \draw[thick, purple, domain=0:6.28, samples=100] plot (\x, {sin(\x r) + cos(\x r)});
-            % Labels
-            \node[blue] at (7, 1) {Wave 1};
-            \node[red] at (7, -1) {Wave 2};
-            \node[purple] at (7, 2) {Resultant Wave};
-        \end{tikzpicture}
-        \caption{Constructive interference of quantum states.}
-    \end{figure}
-
-    \item \textbf{Measurement:} 
-    Measurement in quantum mechanics is the process of observing a quantum system, which causes the system to collapse into a definite state. Before measurement, a quantum system exists in a superposition of all possible states, each with a certain probability amplitude. Upon measurement, the system randomly collapses into one of these states. For example, measuring the state:
-    \[
-    |\psi\rangle = \frac{1}{\sqrt{2}} |0\rangle + \frac{1}{\sqrt{2}} |1\rangle,
-    \]
-    will yield \( |0\rangle \) or \( |1\rangle \) with equal probability \( \frac{1}{2} \).
-
-    \begin{figure}[H]
-        \centering
-        \begin{tikzpicture}
-            % Qubit
-            \node[circle, draw, minimum size=1cm] (qubit) at (0,0) {\( |\psi\rangle \)};
-            % Measurement
-            \node[rectangle, draw, minimum width=2cm, minimum height=1cm] (measure) at (3,0) {Measurement};
-            % Outcomes
-            \node[circle, draw, minimum size=1cm] (out1) at (6,1) {\( |0\rangle \)};
-            \node[circle, draw, minimum size=1cm] (out2) at (6,-1) {\( |1\rangle \)};
-            % Arrows
-            \draw[->] (qubit) -- (measure);
-            \draw[->] (measure) -- (out1) node[midway, above] {\( \frac{1}{2} \)};
-            \draw[->] (measure) -- (out2) node[midway, below] {\( \frac{1}{2} \)};
-        \end{tikzpicture}
-        \caption{Measurement collapsing a qubit into a definite state.}
-    \end{figure}
+\subsubsection{Implications of the Uncertainty Principle}
+The uncertainty principle has profound implications for quantum mechanics:
+\begin{itemize}
+    \item \textbf{Wave-Particle Duality:} It highlights the wave-like nature of particles, as the position and momentum cannot be precisely defined simultaneously.
+    \item \textbf{Quantum Systems:} It imposes fundamental limits on the precision of measurements in quantum systems, influencing the design of experiments and technologies like quantum computing.
+    \item \textbf{Non-Deterministic Nature:} It underscores the probabilistic nature of quantum mechanics, where outcomes are described by probabilities rather than certainties.
 \end{itemize}
+
+\subsection{Wavefunction and Schrödinger's Equation}
+The wavefunction \( |\psi\rangle \) describes the quantum state of a system and contains all the information about the system. The time evolution of the wavefunction is governed by the Schrödinger equation:
+\[
+i\hbar \frac{\partial}{\partial t} |\psi(t)\rangle = \hat{H} |\psi(t)\rangle,
+\]
+\begin{figure}[H]
+    \centering    
+    \resizebox{\linewidth}{!}{%
+    \begin{tikzpicture}[scale=1.5, line width=0.8pt]
+        % Axes
+        \draw[->] (-5.5, 0) -- (5.5, 0) node[anchor=north west] {Position \(x\)};
+        \draw[->] (0, -2) -- (0, 2.5) node[anchor=south east] {Wavefunction \(\psi(x)\)};
+
+        % Wavefunction
+        \fill[blue!5, opacity=0.5] 
+            (-5, 0) -- plot[domain=-5:5, samples=200] (\x, {1.5 * exp(-0.25 * \x * \x) * cos(1.5 * \x r)}) -- (5, 0) -- cycle;
+        \draw[thick, blue, smooth, domain=-5:5, samples=200] 
+            plot (\x, {1.5 * exp(-0.25 * \x * \x) * cos(1.5 * \x r)});
+
+        % Dashed lines for probability density (\(\psi(x)^2\))
+        \fill[red!5, opacity=0.5] 
+            (-5, 0) -- plot[domain=-5:5, samples=200] (\x, {1.5 * exp(-0.5 * \x * \x) * cos(1.5 * \x r) * cos(1.5 * \x r)}) -- (5, 0) -- cycle;
+        \draw[thick, red, smooth, domain=-5:5, samples=200] 
+            plot (\x, {1.5 * exp(-0.5 * \x * \x) * cos(1.5 * \x r) * cos(1.5 * \x r)});
+
+        % Dashed Gaussian envelope
+        \draw[dashed, blue!30, domain=-5:5, samples=200] plot (\x, {1.5 * exp(-0.25 * \x * \x)});
+        \draw[dashed, blue!30, domain=-5:5, samples=200] plot (\x, {-1.5 * exp(-0.25 * \x * \x)});
+
+        % Labels
+        \node[anchor=north, blue] at (4.5, 2) {\(\psi(x) = A e^{-x^2/2} \cos(kx)\)};
+        \node[anchor=north, red] at (4.5, 1) {\(|\psi(x)|^2 = A^2 e^{-x^2} \cos^2(kx)\)};
+        \node[anchor=south west] at (0.2, 2) {Amplitude};
+    \end{tikzpicture}
+    }
+    \caption[schrodinger Wavefunction]{High-resolution wavefunction \(\psi(x)\) with a Gaussian envelope modulated by a cosine wave, and its probability density \(|\psi(x)|^2\) filled.}
+    \label{fig:wavefunction_highend}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \resizebox{\linewidth}{!}{%
+        \begin{tikzpicture}[scale=1.5, line width=0.8pt]
+            % Axes
+            \draw[->] (-4.5, 0) -- (4.5, 0) node[anchor=north west] {Position \(x\)};
+            \draw[->] (0, -2) -- (0, 2.5) node[anchor=south east] {Potential \(V(x)\)};
+            
+            % Potential well
+            \draw[thick, red, smooth] (-4, 2) -- (-1, 2) -- (-1, 0) -- (1, 0) -- (1, 2) -- (4, 2);
+            \node[anchor=north] at (4.5, 2.2) {Potential \(V(x)\)};
+            
+            % Wavefunction inside well
+            \draw[thick, blue, smooth, domain=-1:1, samples=200] 
+                plot (\x, {1.8 * cos(3.14 * \x r)});
+            
+            % Dashed lines for boundaries
+            \draw[dashed, gray] (-1, -2) -- (-1, 2);
+            \draw[dashed, gray] (1, -2) -- (1, 2);
+            
+            % Labels for boundaries
+            \node[anchor=north] at (-1, -2.2) {\(-a\)};
+            \node[anchor=north] at (1, -2.2) {\(a\)};
+            
+            % Additional labels
+            \node[anchor=north west] at (0.2, 2.5) {Wavefunction \(\psi(x)\)};
+            \node[anchor=north east] at (-4, -1.8) {Potential Well};
+            
+            % Energy level
+            \draw[dotted, thick, green!70!black] (-1, 1) -- (1, 1);
+            \node[anchor=west, green!70!black] at (1.2, 1) {Energy Level \(E_1\)};
+        \end{tikzpicture}
+    }
+    \caption{High-resolution wavefunction \(\psi(x)\) in a potential well \(V(x)\).}
+    \label{fig:schrodinger_highend}
+\end{figure}
+
+Solving the Schrödinger equation provides the wavefunction \( |\psi(t)\rangle \) at any given time, enabling the prediction of quantum behavior.
+
+\subsection{Superposition Principle}
+Superposition is a fundamental principle of quantum mechanics that allows quantum systems to exist in multiple states simultaneously. In the context of quantum computing, a quantum bit (qubit) can represent both \( |0\rangle \) and \( |1\rangle \) at the same time, unlike classical bits that can only represent one state at a time. Mathematically, a qubit in superposition is represented as:
+\[
+|\psi\rangle = \alpha |0\rangle + \beta |1\rangle,
+\]
+where \( \alpha \) and \( \beta \) are complex numbers satisfying \( |\alpha|^2 + |\beta|^2 = 1 \). This property enables quantum computers to process a vast number of possibilities simultaneously, leading to exponential speedups for certain types of problems.
+\begin{figure}[H]
+    \centering
+        \begin{tikzpicture}[line cap=round, line join=round, >=Stealth]
+        
+        % Draw the outer sphere
+        \draw[thick] (0,0) circle (2cm);
+        
+        % Draw the equatorial plane (dashed ellipse)
+        \draw[dash pattern=on 3pt off 3pt] (0,0) ellipse (2cm and 0.9cm);
+        
+        % Highlight angles
+        \draw[shift={(0,0)}, lightgray, fill, fill opacity=0.1] (0,0) -- (56.7:0.4) arc (56.7:90:0.4) -- cycle;
+        \draw[shift={(0,0)}, lightgray, fill, fill opacity=0.1] (0,0) -- (-135.7:0.4) arc (-135.7:-33.2:0.4) -- cycle;
+        
+        % Axes
+        \draw[->, thick, gray] (0,0) -- (0,2) node[anchor=south, black] {$\hat{z}=|0\rangle$};
+        \draw[->, thick, gray] (0,0) -- (2,0) node[anchor=west, black] {$\hat{y}$};
+        \draw[->, thick, gray] (0,0) -- ({-1.158*sin(45)},{-1.158*sin(45)}) node[anchor=north east, black] {$\hat{x}$};
+        \draw[->, thick, gray] (0,0) -- (0,-2) node[anchor=north, black] {$-\hat{z}=|1\rangle$};
+        
+        % Qubit state vector
+        \draw[thick, ->, blue] (0,0) -- (0.7,1.07) node[anchor=south west] {$|\psi\rangle$};
+        
+        % Projection lines
+        \draw[dotted] (0.7,1.07) -- (0.7,-0.46);
+        \draw[dotted] (0,0) -- (0.7,-0.46);
+        
+        % Angle labels
+        \node at (-0.15,-0.6) {$\phi$};
+        \node at (0.25,0.85) {$\theta$}; % Adjusted theta position slightly to the right
+        
+        % State label moved to the side
+        \node[align=left, font=\small, anchor=west] at (3,0) {$|\psi\rangle = \cos\left(\frac{\theta}{2}\right)|0\rangle + e^{i\phi}\sin\left(\frac{\theta}{2}\right)|1\rangle$};
+        
+        % Markers
+        \draw[fill] (0,0) circle (1.5pt); % Origin
+        \draw[fill, blue] (0.7,1.07) circle (1pt); % Qubit state
+    \end{tikzpicture}
+    \caption{Representation of a qubit on the Bloch sphere, showing the state \( |\psi\rangle = \cos\left(\frac{\theta}{2}\right)|0\rangle + e^{i\phi}\sin\left(\frac{\theta}{2}\right)|1\rangle \) with angles \( \theta \) and \( \phi \). The vector \( |\psi\rangle \) is shown in blue, illustrating that the atom is in a superposition of states \( |0\rangle \) and \( |1\rangle \) simultaneously.}
+    \end{figure}
+
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}[line width=0.8pt, scale=1.2]
+        % Energy levels
+        \draw[thick] (0,0) -- (8,0) node[above, near start, anchor=south east, xshift=-1.2cm] {Ground State \(E_0\)};
+        \draw[thick] (0,3) -- (8,3) node[above, near start, anchor=south east, xshift=-1.2cm] {Excited State \(E_1\)};
+        \draw[thick] (0,5) -- (8,5) node[above, near start, anchor=south east, xshift=-1.2cm] {Higher Excited State \(E_2\)};
+        
+        % Electron transitions (absorption)
+        \draw[->, thick, blue] (2,0) -- (2,3) node[midway, left] {Absorption \(\hbar\omega_1\)};
+        \draw[->, thick, blue] (4,3) -- (4,5) node[midway, left] {Absorption \(\hbar\omega_2\)};
+        
+        % Enhanced photon representations (incident photons with wave patterns)
+        \draw[->, thick, red, decorate, decoration={snake, amplitude=0.5mm, segment length=3mm}] (1.5,0.5) -- (2,0) node[midway, above left, xshift=-2.5mm] {\(\hbar\omega_1\)};
+        \draw[line width=0.5pt, fill=red] (1.5,0.5) circle (1pt);
+        \draw[->, thick, red, decorate, decoration={snake, amplitude=0.5mm, segment length=3mm}] (3.5,3.5) -- (4,3) node[midway, above left, xshift=-2.5mm] {\(\hbar\omega_2\)};           
+        \draw[line width=0.5pt, fill=red] (3.5,3.5) circle (1pt);
+        
+        % Relaxation paths (emission)
+        \draw[->, thick, green!70!black, dotted] (5,5) -- (5,3) node[midway, right] {Emission \(\hbar\omega_3\)};
+        \draw[->, thick, green!70!black, dotted] (3,3) -- (3,0) node[midway, right] {Emission \(\hbar\omega_4\)};
+        
+        % Wavy photon emission lines
+        \draw[decorate, decoration={snake, amplitude=1mm, segment length=5mm}, thick, orange] (5,5) -- (7,4.5) node[midway, below right, xshift=-5mm] {\(\hbar\omega_3\)};
+        \draw[line width=0.5pt, fill=orange] (7,4.5) circle (1pt);
+        \draw[decorate, decoration={snake, amplitude=1mm, segment length=5mm}, thick, orange] (3,3) -- (8,2) node[midway, above right] {\(\hbar\omega_4\)};
+        \draw[line width=0.5pt, fill=orange] (8,2) circle (1pt);
+        
+        % Additional annotations
+        \node[align=center] at (7.5,4.5) {Photon \\ Emission};
+        \node[align=center] at (8.5,2) {Photon \\ Emission};
+    \end{tikzpicture}
+    \caption{Electron excitation and relaxation: The electron transitions from the ground state \(E_0\) to the excited state \(E_1\) upon absorbing a photon of energy \(\hbar\omega_1\), and further to a higher excited state \(E_2\) upon absorbing another photon of energy \(\hbar\omega_2\). The relaxation process involves the emission of photons \(\hbar\omega_3\) and \(\hbar\omega_4\).}
+    \label{fig:electron_excitation}
+\end{figure}
+
+\subsection{Quantum Entanglement} 
+Entanglement is a unique quantum phenomenon where two or more quantum particles become interconnected in such a way that the state of one particle is directly related to the state of the other, regardless of the distance between them. For example, the entangled state of two qubits can be represented as:
+\[
+|\psi\rangle = \frac{1}{\sqrt{2}} \left( |00\rangle + |11\rangle \right).
+\]
+This correlation persists even if the particles are separated by vast distances. In quantum computing, entanglement is used to create highly efficient communication and computation protocols.
+
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}
+        % Nodes
+        \node[circle, draw, minimum size=1cm] (q1) at (0,0) {\( q_1 \)};
+        \node[circle, draw, minimum size=1cm] (q2) at (4,0) {\( q_2 \)};
+        % Connection
+        \draw[thick] (q1) -- (q2) node[midway, above] {Entanglement};
+    \end{tikzpicture}
+    \caption{Illustration of entangled qubits \( q_1 \) and \( q_2 \).}
+\end{figure}
+
+\subsection{Quantum Interference} 
+Quantum interference arises from the wave-like nature of quantum particles. When quantum states overlap, their probability amplitudes can interfere constructively or destructively. Constructive interference amplifies the probability of correct solutions, while destructive interference cancels out incorrect ones. For example, in a quantum algorithm, the interference can be represented as:
+\[
+|\psi\rangle = \frac{1}{\sqrt{2}} \left( |0\rangle + |1\rangle \right) + \frac{1}{\sqrt{2}} \left( |0\rangle - |1\rangle \right) = |0\rangle.
+\]
+
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}
+        % Waves
+        \draw[thick, blue, domain=0:6.28, samples=100] plot (\x, {sin(\x r)});
+        \draw[thick, red, domain=0:6.28, samples=100] plot (\x, {cos(\x r)});
+        \draw[thick, purple, domain=0:6.28, samples=100] plot (\x, {sin(\x r) + cos(\x r)});
+        % Labels
+        \node[blue] at (7, 1) {Wave 1};
+        \node[red] at (7, -1) {Wave 2};
+        \node[purple] at (7, 2) {Resultant Wave};
+    \end{tikzpicture}
+    \caption{Constructive interference of quantum states.}
+\end{figure}
+
+\subsection{Measurement and Wavefunction Collapse}
+Measurement in quantum mechanics is the process of observing a quantum system, which causes the system to collapse into a definite state. Before measurement, a quantum system exists in a superposition of all possible states, each with a certain probability amplitude. Upon measurement, the system randomly collapses into one of these states. For example, measuring the state:
+\[
+|\psi\rangle = \frac{1}{\sqrt{2}} |0\rangle + \frac{1}{\sqrt{2}} |1\rangle,
+\]
+will yield \( |0\rangle \) or \( |1\rangle \) with equal probability \( \frac{1}{2} \).
+
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}
+        % Qubit
+        \node[circle, draw, minimum size=1cm] (qubit) at (0,0) {\( |\psi\rangle \)};
+        % Measurement
+        \node[rectangle, draw, minimum width=2cm, minimum height=1cm] (measure) at (3,0) {Measurement};
+        % Outcomes
+        \node[circle, draw, minimum size=1cm] (out1) at (6,1) {\( |0\rangle \)};
+        \node[circle, draw, minimum size=1cm] (out2) at (6,-1) {\( |1\rangle \)};
+        % Arrows
+        \draw[->] (qubit) -- (measure);
+        \draw[->] (measure) -- (out1) node[midway, above] {\( \frac{1}{2} \)};
+        \draw[->] (measure) -- (out2) node[midway, below] {\( \frac{1}{2} \)};
+    \end{tikzpicture}
+    \caption{Measurement collapsing a qubit into a definite state.}
+\end{figure}
+
+\subsection{Quantum Tunneling} 
+Quantum tunneling is a phenomenon where a quantum particle can pass through a potential energy barrier, even if it does not have enough energy to overcome it classically. This is due to the wave-like nature of quantum particles, which allows their wave functions to extend into regions that are classically forbidden. For example, the probability of tunneling through a barrier can be represented as:
+\[
+T \approx e^{-2\kappa L},
+\]
+where \( T \) is the transmission probability, \( \kappa \) is a constant related to the barrier height, and \( L \) is the barrier width.
+
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}
+        % Potential barrier
+        \draw[thick, blue] (0,0) -- (2,0) -- (2,2) -- (4,2) -- (4,0) -- (6,0);
+        % Particle wave function
+        \draw[thick, red, domain=-1:2, samples=100] plot (\x, {0.5*exp(-(\x-0)^2)});
+        \draw[thick, red, domain=4:7, samples=100] plot (\x, {0.1*exp(-(\x-6)^2)});
+        % Labels
+        \node[blue] at (3, 2.5) {Potential Barrier};
+        \node[red] at (0, 0.5) {Incident Wave};
+        \node[red] at (5, 0.1) {Transmitted Wave};
+        \node at (3, -0.5) {Tunneling};
+    \end{tikzpicture}
+    \caption{Quantum tunneling through a potential barrier.}
+\end{figure}
+
 
 \section{Mathematical Framework of Quantum Mechanics}
 The mathematical framework of quantum mechanics is based on linear algebra and complex vector spaces. The key notations and concepts include:
@@ -690,6 +1059,7 @@ Despite its potential, quantum mechanics introduces challenges for quantum compu
 This chapter establishes the connection between quantum mechanics and quantum computing, highlighting the transformative potential of this interdisciplinary field and the challenges that must be overcome to realize its full potential.
 
 \chapter{Existing Methods for Breaking RSA Before Quantum Computing}
+\label{chap:existing_methods}
 Before the advent of quantum computing, several classical methods were explored to break RSA encryption. These methods, while not as efficient as quantum algorithms, posed potential threats under certain conditions. This chapter discusses the existing systems and techniques used to attack RSA encryption prior to the emergence of quantum computing.
 
 \section{Brute Force Attacks}
@@ -755,10 +1125,8 @@ While existing methods for breaking RSA encryption have been extensively studied
 
 These drawbacks highlight the need for more advanced approaches, such as quantum-resistant cryptographic systems, to address the vulnerabilities of RSA encryption in the face of evolving computational capabilities.
 
-\chapter{Quantum Computing: A Paradigm Shift}
-Quantum computing represents a revolutionary shift in computational capabilities, leveraging principles of quantum mechanics such as superposition and entanglement. This chapter explores the basics of quantum computing and highlights how it differs from classical computing, particularly in solving problems like integer factorization.
-
 \chapter{Shor's Algorithm and Its Impact on RSA}
+\label{chap:shors_algorithm}
 Shor's algorithm is a quantum algorithm that can factorize large integers exponentially faster than classical algorithms. This chapter delves into the workings of Shor's algorithm and explains how it directly undermines the security of RSA encryption, making it vulnerable to quantum attacks.
 
 \chapter{Implications of Quantum Computing on Cryptography}
@@ -783,7 +1151,40 @@ Quantum-resistant cryptographic systems have a wide range of applications, inclu
     \item Enabling secure communication in emerging technologies such as the Internet of Things (IoT) and autonomous vehicles.
 \end{itemize}
 
-\chapter{Future Enhancement}
+\chapter{Future Enhancement and Research Directions in Quantum Computing}
+The field of quantum computing is rapidly evolving, with ongoing research and development efforts to overcome existing challenges and enhance the capabilities of quantum systems. 
+
+\section{Current State of Quantum Computing Technology}
+\label{sec:challenge_quantum_computing}
+The threat posed by quantum computing to RSA encryption is based on Shor's algorithm, which can efficiently factorize large integers. However, the practical realization of this threat depends on the current state of quantum computing technology. Several challenges limit the immediate impact of quantum computing on RSA encryption:
+
+\begin{itemize}
+    \item \textbf{Qubit Stability:} Quantum computers require stable qubits to perform reliable computations. Current quantum systems face challenges in maintaining qubit coherence and stability over extended periods.
+    \item \textbf{Error Rates:} Quantum operations are susceptible to errors due to noise and environmental factors. Error correction techniques are essential to mitigate these errors and ensure the accuracy of quantum computations.
+    \item \textbf{Scalability:} Building large-scale quantum computers with thousands of qubits is a complex engineering feat. Scaling quantum systems while maintaining coherence and low error rates remains a significant challenge.
+    \item \textbf{Error Correction:} Quantum error correction codes are essential to protect quantum information from errors. Implementing error correction at scale is a non-trivial task that requires significant computational resources.
+    \item \textbf{Algorithmic Improvements:} While Shor's algorithm demonstrates the theoretical threat to RSA encryption, practical implementations require further algorithmic improvements and optimizations to factorize large integers efficiently.
+\end{itemize}
+
+While the theoretical threat posed by Shor's algorithm is significant, the current state of quantum computing technology is not yet advanced enough to break RSA encryption with commonly used key lengths like 2048 bits~\cite{SpinQShor}. Current quantum computers are still in the early stages of development and face limitations in the number of stable and error-corrected qubits (quantum bits) they possess~\cite{CatoNetworks}.
+
+Estimates for the number of logical qubits required to break RSA-2048 vary, ranging from around 4,000 to 20 million, depending on the specific algorithm implementation and assumptions about error correction~\cite{BTQHowFar}. The largest number factored using Shor's algorithm on a quantum computer to date is 21~\cite{SpinQShor}. While there have been claims of breaking larger RSA keys using hybrid quantum-classical approaches with fewer qubits, these have generally involved significantly smaller key sizes (e.g., 22 bits) and do not yet pose a threat to standard RSA implementations~\cite{FreemindtronicRSA}.
+
+\section{Quantum-Resistant Cryptography}
+Quantum-resistant cryptography, also known as post-quantum cryptography, aims to develop cryptographic algorithms that are secure against both classical and quantum computers. These algorithms are based on mathematical problems that are believed to be resistant to quantum attacks, such as lattice-based cryptography, hash-based cryptography, code-based cryptography, and multivariate polynomial cryptography.
+
+\subsection{Standardization Efforts}
+Organizations like NIST (National Institute of Standards and Technology) are actively working on standardizing quantum-resistant algorithms. The NIST Post-Quantum Cryptography Standardization project has identified several candidate algorithms for public-key encryption, digital signatures, and key exchange protocols. These efforts aim to ensure global adoption and interoperability of quantum-resistant cryptographic systems.
+
+\subsection{Challenges and Research Directions}
+While quantum-resistant cryptography holds promise, several challenges remain:
+\begin{itemize}
+    \item \textbf{Performance Overhead:} Quantum-resistant algorithms often require larger key sizes and computational resources compared to traditional cryptographic systems.
+    \item \textbf{Security Analysis:} Extensive research is needed to analyze the security of proposed algorithms against both classical and quantum attacks.
+    \item \textbf{Integration with Existing Systems:} Transitioning to quantum-resistant cryptography requires compatibility with existing communication protocols and infrastructure.
+\end{itemize}
+
+\subsection{Future Enhancements}
 The advent of quantum computing poses a significant challenge to traditional cryptographic systems like RSA encryption. However, it also drives innovation in the field of cryptography, leading to the development of quantum-resistant algorithms. Future enhancements in this area include:
 \begin{itemize}
     \item Standardizing quantum-resistant algorithms to ensure global adoption and interoperability.
@@ -791,24 +1192,120 @@ The advent of quantum computing poses a significant challenge to traditional cry
     \item Conducting extensive research to identify and mitigate potential vulnerabilities in proposed systems.
 \end{itemize}
 
+
 \chapter{Conclusion}
 In conclusion, the transition to quantum-resistant cryptography is essential to mitigate the risks posed by quantum computing. By adopting these advanced systems, we can ensure the continued security of sensitive information and maintain trust in digital communication in the quantum era.
 
-% \chapter*{References}
-% \begin{enumerate}
-%     \item Shor, P. W. (1994). Algorithms for quantum computation: Discrete logarithms and factoring. \textit{Proceedings 35th Annual Symposium on Foundations of Computer Science}.
-%     \item Rivest, R. L., Shamir, A., \& Adleman, L. (1978). A method for obtaining digital signatures and public-key cryptosystems. \textit{Communications of the ACM}.
-%     \item National Institute of Standards and Technology (NIST). Post-Quantum Cryptography. \url{https://csrc.nist.gov/Projects/Post-Quantum-Cryptography}.
-% \end{enumerate}
-
-\begin{thebibliography}{9}
+\begin{thebibliography}{50}
     \bibitem{Rivest1978}
     Rivest, R., Shamir, A., \& Adleman, L. (1978). 
     \textit{A Method for Obtaining Digital Signatures and Public-Key Cryptosystems}. 
     Communications of the ACM, 21(2), 120--126. 
-    CiteSeerX 10.1.1.607.2677.\space doi:\href{https://doi.org/10.1145/359340.359342}{10.1145/359340.359342}. S2CID 2873616. 
+    doi:\href{https://doi.org/10.1145/359340.359342}{10.1145/359340.359342}.
+    CiteSeerX: \href{https://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.607.2677}{10.1.1.607.2677}.
+    S2CID: \href{https://scite.ai/reports/2873616}{2873616}.
     Archived from the original (PDF) on 2023--01--27.\@ 
     Available at: \url{http://people.csail.mit.edu/rivest/Rsapaper.pdf}.
+    
+    \bibitem{Okta}
+    Okta. (2025). 
+    \textit{RSA Encryption: Definition, Architecture, Benefits \& Use}. 
+    Retrieved March 23, 2025, from \url{https://www.okta.com/identity-101/rsa-encryption/}.
+    
+    \bibitem{SecureW2}
+    SecureW2. (2025). 
+    \textit{Understanding RSA Asymmetric Encryption: How It Works}. 
+    Retrieved March 23, 2025, from \url{https://www.securew2.com/blog/what-is-rsa-asymmetric-encryption}.
+    
+    \bibitem{SoftwareDominos}
+    SoftwareDominos. (2025). 
+    \textit{Understanding RSA: The Mathematics Behind Secure Encryption}. 
+    Retrieved March 23, 2025, from \url{https://softwaredominos.com/home/software-engineering-and-computer-science/understanding-rsa-the-mathematics-behind-secure-encryption/}.
+    
+    \bibitem{RSAWiki}
+    Wikipedia. (2025). 
+    \textit{RSA problem}. 
+    Retrieved March 23, 2025, from \url{https://en.wikipedia.org/wiki/RSA_problem}.
+    
+    \bibitem{ODUCommons}
+    ODU Digital Commons. (2025). 
+    \textit{The Vulnerabilities to the RSA Algorithm and Future Alternative Algorithms to Improve Security}. 
+    Retrieved March 23, 2025, from \url{https://digitalcommons.odu.edu/cgi/viewcontent.cgi?article=1081&context=covacci-undergraduateresearch}.
+    
+    \bibitem{AuthoreaImplementation}
+    Authorea. (2025).
+    \textit{Implementation and Analysis of Shor's Algorithm to Break RSA Cryptosystem Security}.
+    Retrieved March 23, 2025, from \url{https://www.authorea.com/users/708580/articles/693052-implementation-and-analysis-of-shor-s-algorithm-to-break-rsa-cryptosystem-security}.
+    
+    \bibitem{SpinQShor}
+    SpinQ. (2025).
+    \textit{How Shor's Algorithm Breaks RSA: A Quantum Computing Guide}.
+    Retrieved March 23, 2025, from \url{https://www.spinquanta.com/news-detail/shors-algorithm}.
+    
+    \bibitem{GeeksForGeeks}
+    GeeksforGeeks. (2025).
+    \textit{RSA Algorithm in Cryptography}.
+    Retrieved March 23, 2025, from \url{https://www.geeksforgeeks.org/rsa-algorithm-cryptography/}.
+    
+    \bibitem{SplunkRSA}
+    Splunk. (2025).
+    \textit{RSA Algorithm in Cryptography: Rivest Shamir Adleman Explained}.
+    Retrieved March 23, 2025, from \url{https://www.splunk.com/en_us/blog/learn/rsa-algorithm-cryptography.html}.
+    
+    \bibitem{TechRxivImplementation}
+    TechRxiv. (2025).
+    \textit{Implementation and Analysis of Shor's Algorithm to Break RSA Cryptosystem Security}.
+    Retrieved March 23, 2025, from \url{https://www.techrxiv.org/users/708580/articles/693052/master/file/data/RESERCH%20FINAL/RESERCH%20FINAL.pdf}.
+    
+    \bibitem{ResearchGateImplementation}
+    ResearchGate. (2025).
+    \textit{Implementation and Analysis of Shor's Algorithm to Break RSA Cryptosystem Security}.
+    Retrieved March 23, 2025, from \url{https://www.researchgate.net/publication/377245624_Implementation_and_Analysis_of_Shor's_Algorithm_to_Break_RSA_Cryptosystem_Security}.
+    
+    \bibitem{CatoNetworks}
+    Cato Networks. (2025).
+    \textit{Is the Recent Quantum Hype by Google Willow's Chip a Threat to RSA Algorithm?}
+    Retrieved March 23, 2025, from \url{https://www.catonetworks.com/blog/is-recent-quantum-hype-by-google-willows-chip-a-threat-to-rsa-algorithm/}.
+    
+    \bibitem{BTQHowFar}
+    BTQ. (2025).
+    \textit{How Far Away Is The Quantum Threat?}
+    Retrieved March 23, 2025, from \url{https://www.btq.com/blog/how-far-away-is-the-quantum-threat}.
+    
+    \bibitem{FreemindtronicRSA}
+    Freemindtronic. (2025).
+    \textit{Quantum computing RSA encryption: a threat and a solution}.
+    Retrieved March 23, 2025, from \url{https://freemindtronic.com/quantum-computing-rsa-encryption-freemindtronic-nfc-technology/}.
+    
+    \bibitem{PaloAltoNetworks}
+    Palo Alto Networks. (2025).
+    \textit{What Is Quantum Computing's Threat to Cybersecurity?}
+    Retrieved March 23, 2025, from \url{https://www.paloaltonetworks.com/cyberpedia/what-is-quantum-computings-threat-to-cybersecurity}.
+    
+    \bibitem{IBMCommunity}
+    IBM Community. (2025).
+    \textit{How many Number of qubits required for decryption}.
+    Retrieved March 23, 2025, from \url{https://community.ibm.com/community/user/ai-datascience/discussion/how-many-number-of-qubits-required-for-decryption}.
+    
+    \bibitem{SectigoConcerns}
+    Sectigo. (2025).
+    \textit{Quantum computing concerns \& positive impacts}.
+    Retrieved March 23, 2025, from \url{https://www.sectigo.com/resource-library/quantum-computing-concerns-positive-impacts}.
+    
+    \bibitem{NISTPQC}
+    NIST Computer Security Resource Center. (2025).
+    \textit{Post-Quantum Cryptography}.
+    Retrieved March 23, 2025, from \url{https://csrc.nist.gov/projects/post-quantum-cryptography}.
+    
+    \bibitem{NISTStandardization}
+    Wikipedia. (2025).
+    \textit{NIST Post-Quantum Cryptography Standardization}.
+    Retrieved March 23, 2025, from \url{https://en.wikipedia.org/wiki/NIST_Post-Quantum_Cryptography_Standardization}.
+    
+    \bibitem{GooglePQC}
+    Google Online Security Blog. (2024).
+    \textit{Post-Quantum Cryptography: Standards and Progress}.
+    Retrieved March 23, 2025, from \url{https://security.googleblog.com/2024/08/post-quantum-cryptography-standards.html}.
 \end{thebibliography}
 
 \end{document}
